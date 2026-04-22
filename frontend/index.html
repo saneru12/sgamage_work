@@ -81,7 +81,7 @@
 <script>loadSettings();</script>
 <script>
 (async () => {
-  const res = await fetch('http://localhost:5000/api/projects');
+  const res = await fetch('https://sgamagework-production.up.railway.app/api/projects');
   const projects = await res.json();
   const show = projects.slice(0,6);
   const grid = document.getElementById('projectGrid');

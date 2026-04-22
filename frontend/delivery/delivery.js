@@ -1,5 +1,5 @@
 const DeliveryPortal = (() => {
-  const API_BASE = "http://localhost:5000/api";
+  const API_BASE = "https://sgamagework-production.up.railway.app/api";
   const TOKEN_KEY = "sg_delivery_token";
   const META_KEY = "sg_delivery_meta";
 

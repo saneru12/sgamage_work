@@ -7,7 +7,7 @@
 */
 
 const AdminUI = (() => {
-  const API_BASE = "http://localhost:5000/api";
+  const API_BASE = "https://sgamagework-production.up.railway.app/api";
   const TOKEN_KEY = "sg_admin_token";
   const ADMIN_KEY = "sg_admin_meta";
 
