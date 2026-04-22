@@ -1,0 +1,249 @@
+{
+  "info": {
+    "_postman_id": "94fe1d76-6426-459f-9957-faaec30049e2",
+    "name": "S.Gamage - Products (9)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000"
+    }
+  ],
+  "item": [
+    {
+      "name": "Portland Cement (50kg)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/products",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "products"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Portland Cement (50kg)\",\n  \"category\": \"Cement\",\n  \"priceLKR\": 2900,\n  \"stockQty\": 120,\n  \"description\": \"High-quality cement for strong foundations.\",\n  \"imageUrl\": \"https://images.unsplash.com/photo-1581578017429-bb7d4fbde794?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    },
+    {
+      "name": "TMT Steel Bar 12mm",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/products",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "products"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"TMT Steel Bar 12mm\",\n  \"category\": \"Steel\",\n  \"priceLKR\": 1850,\n  \"stockQty\": 300,\n  \"description\": \"Durable steel bars for reinforcement.\",\n  \"imageUrl\": \"https://images.unsplash.com/photo-1581091215367-59ab6c86b1d0?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Sand (1 Cube)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/products",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "products"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Sand (1 Cube)\",\n  \"category\": \"Aggregates\",\n  \"priceLKR\": 8500,\n  \"stockQty\": 40,\n  \"description\": \"Washed river sand for construction.\",\n  \"imageUrl\": \"https://images.unsplash.com/photo-1604082783611-8a7b61d9758c?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Metal (1 Cube)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/products",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "products"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Metal (1 Cube)\",\n  \"category\": \"Aggregates\",\n  \"priceLKR\": 12000,\n  \"stockQty\": 35,\n  \"description\": \"Crushed metal aggregate for concrete.\",\n  \"imageUrl\": \"https://images.unsplash.com/photo-1604082783611-8a7b61d9758c?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Wall Putty 20kg",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/products",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "products"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Wall Putty 20kg\",\n  \"category\": \"Finishing\",\n  \"priceLKR\": 4200,\n  \"stockQty\": 55,\n  \"description\": \"Smooth wall finishing putty.\",\n  \"imageUrl\": \"https://images.unsplash.com/photo-1580901270726-79b2f3a6f0b2?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Interior Paint 4L",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/products",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "products"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Interior Paint 4L\",\n  \"category\": \"Paint\",\n  \"priceLKR\": 6800,\n  \"stockQty\": 70,\n  \"description\": \"Premium washable interior paint.\",\n  \"imageUrl\": \"https://images.unsplash.com/photo-1590080877800-1c98d5c83f63?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    },
+    {
+      "name": "PVC Pipe 1 inch",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/products",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "products"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"PVC Pipe 1 inch\",\n  \"category\": \"Plumbing\",\n  \"priceLKR\": 850,\n  \"stockQty\": 200,\n  \"description\": \"PVC pipe for plumbing works.\",\n  \"imageUrl\": \"https://images.unsplash.com/photo-1581578017429-bb7d4fbde794?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Electrical Wire 1.5mm (roll)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/products",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "products"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Electrical Wire 1.5mm (roll)\",\n  \"category\": \"Electrical\",\n  \"priceLKR\": 5400,\n  \"stockQty\": 90,\n  \"description\": \"Copper wire roll for electrical installation.\",\n  \"imageUrl\": \"https://images.unsplash.com/photo-1581091215367-59ab6c86b1d0?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Construction Safety Helmet",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/products",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "products"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Construction Safety Helmet\",\n  \"category\": \"Safety\",\n  \"priceLKR\": 1800,\n  \"stockQty\": 150,\n  \"description\": \"Safety helmet for site work.\",\n  \"imageUrl\": \"https://images.unsplash.com/photo-1541888946425-d81bb19240f5?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>My Account • S.Gamage Constructions</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body>
+<header>
+  <div class="nav">
+    <a class="brand" href="../index.html">
+      <img class="brand-logo" src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?fm=jpg&q=80&w=200" alt="S.Gamage Constructions Logo"/>
+      <div>
+        <div class="brand-text">S.Gamage Constructions</div>
+        <div class="brand-sub">Residential • Commercial • Civil Engineering</div>
+      </div>
+    </a>
+    <nav class="menu">
+      <a href="../index.html">Home</a>
+      <a href="../projects.html">Projects</a>
+      <a href="../shop.html">Hardware Shop</a>
+      <a href="../careers.html">Careers</a>
+      <a href="../contact.html">Contact</a>
+      <a id="customerAuthLink" class="admin-btn" href="dashboard.html" title="My Account">My Account</a>
+      <a id="customerLogoutLink" class="admin-btn" href="#" title="Logout" style="display:none">Logout</a>
+      <a class="admin-btn" href="../admin/index.html" title="Admin Login">Admin</a>
+    </nav>
+  </div>
+</header>
+
+<div class="container" id="customerDashboard">
+  <section class="hero" style="grid-template-columns:1.05fr .95fr;">
+    <div class="panel">
+      <div class="badge">My Account</div>
+      <h2 id="custName" style="margin:10px 0 6px">...</h2>
+      <p style="color:var(--muted);line-height:1.8">
+        <b>Email:</b> <span id="custEmail">...</span><br/>
+        <b>Phone:</b> <span id="custPhone">...</span><br/>
+        <b>Address:</b> <span id="custAddress">...</span>
+      </p>
+      <p style="margin-top:14px;color:var(--muted)">You can now add items to cart, buy hardware, submit reviews, apply for jobs and send inquiries.</p>
+      <p style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+        <a class="btn" href="../shop.html">Go to Shop</a>
+        <a class="btn" href="../projects.html">View Projects</a>
+      </p>
+    </div>
+
+    <div class="form">
+      <div class="badge">Update Profile</div>
+      <form id="customerProfileForm">
+        <label>Full Name</label>
+        <input name="fullName" required />
+
+        <label>Phone</label>
+        <input name="phone" required />
+
+        <label>Address</label>
+        <input name="address" />
+
+        <div style="margin-top:12px">
+          <button class="btn" type="submit">Save Changes</button>
+        </div>
+        <div id="customerProfileStatus" class="status"></div>
+        <small style="color:var(--muted)">Email cannot be changed (kept as account identity).</small>
+      </form>
+    </div>
+  </section>
+
+  <section class="panel" style="margin-top:18px">
+    <div class="badge">My Orders & Returns</div>
+    <div id="myOrders" style="margin-top:10px"></div>
+  </section>
+
+  <section class="panel" style="margin-top:18px">
+    <div class="badge">My Inquiries</div>
+    <div id="myInquiries" style="margin-top:10px"></div>
+  </section>
+
+  <section class="panel" style="margin-top:18px">
+    <div class="badge">My Reviews</div>
+    <div id="myReviews" style="margin-top:10px"></div>
+  </section>
+
+  <section class="panel" style="margin-top:18px">
+    <div class="badge">My Job Applications</div>
+    <div id="myApplications" style="margin-top:10px"></div>
+  </section>
+</div>
+
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <b data-setting="siteName">S.Gamage Constructions</b><br/>
+      <small data-setting="tagline">Professional building constructions & engineering solutions.</small>
+    </div>
+    <div>
+      <small><b>Contact:</b> <span data-setting="email">constructionssgamage@gmail.com</span> • <span data-setting="phone">071 858 4073</span></small><br/>
+      <small>© 2026 S.Gamage Constructions. All rights reserved.</small>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/app.js"></script>
+<script>
+  loadSettings();
+  initCustomerDashboard();
+</script>
+</body>
+</html>

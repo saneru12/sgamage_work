@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Services - S.Gamage Constructions</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<header>
+  <div class="nav">
+    <a class="brand" href="index.html">
+      <img class="brand-logo" src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?fm=jpg&q=80&w=200" alt="S.Gamage Constructions Logo"/>
+      <div>
+        <div class="brand-text">S.Gamage Constructions</div>
+        <div class="brand-sub">Residential • Commercial • Civil Engineering</div>
+      </div>
+    </a>
+    <nav class="menu">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="services.html">Services</a>
+      <a href="projects.html">Projects</a>
+      <a href="shop.html">Hardware Shop</a>
+      <a href="careers.html">Careers</a>
+      <a href="contact.html">Contact</a>
+      <a id="customerAuthLink" class="admin-btn" href="customer/login.html" title="Customer Login">Customer Login</a>
+      <a id="customerLogoutLink" class="admin-btn" href="#" title="Logout" style="display:none">Logout</a>
+      <a class="admin-btn" href="admin/index.html" title="Admin Login">Admin</a>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+<div class="panel">
+  <div class="badge">Services</div>
+  <h2 style="margin:10px 0 6px">What we offer</h2>
+  <p style="color:var(--muted)">Choose the fastest way to connect for each service — Normal Voice, WhatsApp Call, WhatsApp Msg, or Email.</p>
+</div>
+<div id="serviceGrid" class="grid"></div>
+
+<div id="serviceContactModal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="serviceContactTitle">
+  <div class="panel modal-card contact-modal-card">
+    <div class="contact-modal-head">
+      <div>
+        <div class="badge">Service Contact</div>
+        <h3 id="serviceContactTitle" class="contact-modal-title" data-service-contact-title>Contact this service</h3>
+        <p class="contact-modal-copy" data-service-contact-copy>Choose how you want to connect with S.Gamage Constructions.</p>
+      </div>
+      <button type="button" class="icon-btn contact-modal-close" data-close-modal aria-label="Close dialog">✕</button>
+    </div>
+    <div class="contact-option-grid" data-service-contact-options></div>
+    <div class="contact-modal-meta" data-service-contact-meta></div>
+  </div>
+</div>
+
+</div>
+
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <b id="siteName">S.Gamage Constructions</b><br/>
+      <small id="siteTagline">Professional building constructions & engineering solutions.</small>
+    </div>
+    <div>
+      <small><b>Contact:</b> <span id="contactEmail">constructionssgamage@gmail.com</span> • <span id="contactPhone">071 858 4073</span></small><br/>
+      <small>© 2026 S.Gamage Constructions. All rights reserved.</small>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/app.js"></script>
+<script>loadSettings();</script>
+<script>loadServices('serviceGrid');</script>
+</body>
+</html>

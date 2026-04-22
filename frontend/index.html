@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>S.Gamage Constructions</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<header>
+  <div class="nav">
+    <a class="brand" href="index.html">
+      <img class="brand-logo" src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?fm=jpg&q=80&w=200" alt="S.Gamage Constructions Logo"/>
+      <div>
+        <div class="brand-text">S.Gamage Constructions</div>
+        <div class="brand-sub">Residential • Commercial • Civil Engineering</div>
+      </div>
+    </a>
+    <nav class="menu">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="services.html">Services</a>
+      <a href="projects.html">Projects</a>
+      <a href="shop.html">Hardware Shop</a>
+      <a href="careers.html">Careers</a>
+      <a href="contact.html">Contact</a>
+      <a id="customerAuthLink" class="admin-btn" href="customer/login.html" title="Customer Login">Customer Login</a>
+      <a id="customerLogoutLink" class="admin-btn" href="#" title="Logout" style="display:none">Logout</a>
+      <a class="admin-btn" href="admin/index.html" title="Admin Login">Admin</a>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+<section class="hero">
+  <div class="panel">
+    <h1 id="heroTitle">Build with confidence. Deliver with quality.</h1>
+    <p id="heroSubtitle">We create reliable residential, commercial and civil engineering projects with a focus on safety, on-time delivery and modern standards.</p>
+    <a class="btn" href="contact.html">Request a Quote</a>
+
+    <div class="stats">
+      <div class="stat"><b>10+</b><span>Years Experience</span></div>
+      <div class="stat"><b>120+</b><span>Projects Delivered</span></div>
+      <div class="stat"><b>100%</b><span>Safety Focus</span></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="badge">Quick Links</div>
+    <p>Browse our services, explore completed projects, and order hardware items.</p>
+    <p style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+      <a class="btn" href="services.html">View Services</a>
+      <a class="btn" href="projects.html">Our Projects</a>
+      <a class="btn" href="shop.html">Hardware Shop</a>
+    </p>
+    <p style="margin-top:14px;color:var(--muted)">Tip: Seed sample data with Postman (collections included).</p>
+  </div>
+</section>
+
+<section style="margin-top:18px" class="panel">
+  <div class="badge">Featured Projects</div>
+  <div id="projectGrid" class="grid"></div>
+</section>
+
+</div>
+
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <b id="siteName">S.Gamage Constructions</b><br/>
+      <small id="siteTagline">Professional building constructions & engineering solutions.</small>
+    </div>
+    <div>
+      <small><b>Contact:</b> <span id="contactEmail">constructionssgamage@gmail.com</span> • <span id="contactPhone">071 858 4073</span></small><br/>
+      <small>© 2026 S.Gamage Constructions. All rights reserved.</small>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/app.js"></script>
+<script>loadSettings();</script>
+<script>
+(async () => {
+  const res = await fetch('http://localhost:5000/api/projects');
+  const projects = await res.json();
+  const show = projects.slice(0,6);
+  const grid = document.getElementById('projectGrid');
+  grid.innerHTML = show.map(p => `
+    <div class="card">
+      <img src="${p.imageUrl || 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?fm=jpg&q=80&w=1600'}" alt="${p.title}">
+      <div class="body">
+        <div class="badge">${p.category} • ${p.status}</div>
+        <h3>${p.title}</h3>
+        <p>${p.location || ''}</p>
+        <p style="margin-top:10px"><a class="btn" href="project.html?id=${p._id}">View Details</a></p>
+      </div>
+    </div>
+  `).join('');
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,249 @@
+{
+  "info": {
+    "_postman_id": "dcff5260-01fa-4087-8bec-bd80a86507d3",
+    "name": "S.Gamage - Services (9)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000"
+    }
+  ],
+  "item": [
+    {
+      "name": "House Construction",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/services",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "services"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"category\": \"Residential\",\n  \"name\": \"House Construction\",\n  \"description\": \"Full house construction from foundation to finishing.\",\n  \"priceFromLKR\": 0,\n  \"imageUrl\": \"https://images.unsplash.com/photo-1501183638710-841dd1904471?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Renovation & Remodeling",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/services",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "services"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"category\": \"Residential\",\n  \"name\": \"Renovation & Remodeling\",\n  \"description\": \"Home renovation, extensions, and modern upgrades.\",\n  \"priceFromLKR\": 0,\n  \"imageUrl\": \"https://images.unsplash.com/photo-1505691938895-1758d7feb511?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Commercial Buildings",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/services",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "services"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"category\": \"Commercial\",\n  \"name\": \"Commercial Buildings\",\n  \"description\": \"Office, shop and commercial construction solutions.\",\n  \"priceFromLKR\": 0,\n  \"imageUrl\": \"https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Road & Drainage Works",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/services",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "services"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"category\": \"Civil\",\n  \"name\": \"Road & Drainage Works\",\n  \"description\": \"Civil engineering works including drainage and road structures.\",\n  \"priceFromLKR\": 0,\n  \"imageUrl\": \"https://images.unsplash.com/photo-1504307651254-35680f356dfd?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Architectural Planning",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/services",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "services"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"category\": \"Design\",\n  \"name\": \"Architectural Planning\",\n  \"description\": \"Planning and design support for your project needs.\",\n  \"priceFromLKR\": 0,\n  \"imageUrl\": \"https://images.unsplash.com/photo-1521737604893-d14cc237f11d?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Project Management",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/services",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "services"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"category\": \"Management\",\n  \"name\": \"Project Management\",\n  \"description\": \"End-to-end project management & supervision.\",\n  \"priceFromLKR\": 0,\n  \"imageUrl\": \"https://images.unsplash.com/photo-1521791055366-0d553872125f?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Painting & Finishing",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/services",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "services"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"category\": \"Finishing\",\n  \"name\": \"Painting & Finishing\",\n  \"description\": \"Interior/exterior finishing, painting and detailing.\",\n  \"priceFromLKR\": 0,\n  \"imageUrl\": \"https://images.unsplash.com/photo-1562259929-76d9d3c3f2a4?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Electrical & Plumbing",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/services",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "services"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"category\": \"MEP\",\n  \"name\": \"Electrical & Plumbing\",\n  \"description\": \"Electrical, plumbing and MEP installation support.\",\n  \"priceFromLKR\": 0,\n  \"imageUrl\": \"https://images.unsplash.com/photo-1581578017429-bb7d4fbde794?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Site Safety & Compliance",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/services",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "services"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"category\": \"Safety\",\n  \"name\": \"Site Safety & Compliance\",\n  \"description\": \"Safety-first approach with standards & best practices.\",\n  \"priceFromLKR\": 0,\n  \"imageUrl\": \"https://images.unsplash.com/photo-1541888946425-d81bb19240f5?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Delivery Portal Login • S.Gamage Constructions</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100">
+  <div class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md rounded-3xl border border-slate-800 bg-slate-900/90 shadow-2xl p-6">
+      <div class="mb-6">
+        <div class="text-xs uppercase tracking-[0.3em] text-slate-400">S.Gamage Constructions</div>
+        <h1 class="mt-2 text-2xl font-semibold">Delivery Boy Portal</h1>
+        <p class="mt-2 text-sm text-slate-400">Use your delivery-team login to view assigned jobs, update delivery progress, and log completed activities.</p>
+      </div>
+
+      <form id="deliveryLoginForm" class="space-y-4">
+        <div>
+          <label class="text-sm text-slate-300">Username</label>
+          <input name="username" type="text" class="mt-1 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm outline-none focus:border-slate-500" placeholder="delivery.rider01" />
+        </div>
+        <div>
+          <label class="text-sm text-slate-300">Password</label>
+          <input name="password" type="password" class="mt-1 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm outline-none focus:border-slate-500" placeholder="••••••••" />
+        </div>
+        <button type="submit" class="w-full rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-slate-900 hover:bg-slate-100">Login to Portal</button>
+        <div id="loginStatus" class="text-sm text-slate-400"></div>
+      </form>
+
+      <div class="mt-6 rounded-2xl border border-slate-800 bg-slate-950 p-4 text-xs text-slate-400">
+        Admin can create or reset delivery-boy accounts from <b>Admin → Delivery Team</b>.
+      </div>
+    </div>
+  </div>
+
+  <script src="./delivery.js"></script>
+</body>
+</html>

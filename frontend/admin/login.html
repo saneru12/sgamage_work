@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Login • S.Gamage Constructions</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+  <div class="w-full max-w-md bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+    <div class="mb-6">
+      <h1 class="text-2xl font-semibold text-slate-900">Admin Login</h1>
+      <p class="text-sm text-slate-600 mt-1">Sign in to manage the website content.</p>
+    </div>
+
+    <form id="loginForm" class="space-y-4">
+      <div>
+        <label class="text-sm font-medium text-slate-700">Username</label>
+        <input name="username" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-900" placeholder="admin" />
+      </div>
+      <div>
+        <label class="text-sm font-medium text-slate-700">Password</label>
+        <input name="password" type="password" required class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-900" placeholder="••••••••" />
+      </div>
+
+      <button class="w-full rounded-xl bg-slate-900 text-white py-2.5 font-medium hover:bg-slate-800">Sign in</button>
+      <p id="status" class="text-sm mt-2"></p>
+      <p class="text-xs text-slate-500">Default: admin / admin123 (change in backend .env)</p>
+    </form>
+  </div>
+
+  <script src="./admin.js"></script>
+  <script>
+    window.addEventListener('pageshow', (e) => { if (e.persisted) window.location.reload(); });
+    if (localStorage.getItem('sg_admin_token')) {
+      location.href = './index.html';
+    } else {
+      AdminUI.mountLogin();
+    }
+  </script>
+</body>
+</html>

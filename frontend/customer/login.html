@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Customer Login • S.Gamage Constructions</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body>
+<header>
+  <div class="nav">
+    <a class="brand" href="../index.html">
+      <img class="brand-logo" src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?fm=jpg&q=80&w=200" alt="S.Gamage Constructions Logo"/>
+      <div>
+        <div class="brand-text">S.Gamage Constructions</div>
+        <div class="brand-sub">Residential • Commercial • Civil Engineering</div>
+      </div>
+    </a>
+    <nav class="menu">
+      <a href="../index.html">Home</a>
+      <a href="../about.html">About</a>
+      <a href="../services.html">Services</a>
+      <a href="../projects.html">Projects</a>
+      <a href="../shop.html">Hardware Shop</a>
+      <a href="../careers.html">Careers</a>
+      <a href="../contact.html">Contact</a>
+      <a id="customerAuthLink" class="admin-btn" href="login.html" title="Customer Login">Customer Login</a>
+      <a id="customerLogoutLink" class="admin-btn" href="#" title="Logout" style="display:none">Logout</a>
+      <a class="admin-btn" href="../admin/index.html" title="Admin Login">Admin</a>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+  <section class="hero" style="grid-template-columns:1fr 1fr;">
+    <div class="panel">
+      <div class="badge">Customer Login</div>
+      <h2 style="margin:10px 0 6px">Welcome back</h2>
+      <p style="color:var(--muted)">Login to add items to cart, place orders, submit reviews, apply for jobs and send inquiries.</p>
+
+      <form id="customerLoginForm" class="form" style="margin-top:14px">
+        <label>Email or Phone</label>
+        <input name="emailOrPhone" placeholder="email@example.com or 07X XXX XXXX" required />
+
+        <label>Password</label>
+        <input name="password" type="password" placeholder="••••••••" required />
+
+        <div style="margin-top:12px">
+          <button class="btn" type="submit">Login</button>
+        </div>
+        <div id="customerLoginStatus" class="status"></div>
+      </form>
+    </div>
+
+    <div class="panel">
+      <div class="badge">New Customer?</div>
+      <h2 style="margin:10px 0 6px">Create your account</h2>
+      <p style="color:var(--muted)">Register once and then login using this panel.</p>
+      <p style="margin-top:12px">
+        <a class="btn" href="register.html">Register</a>
+      </p>
+      <p style="margin-top:14px;color:var(--muted)">Tip: After you register, we will redirect you back to this login page.</p>
+    </div>
+  </section>
+</div>
+
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <b data-setting="siteName">S.Gamage Constructions</b><br/>
+      <small data-setting="tagline">Professional building constructions & engineering solutions.</small>
+    </div>
+    <div>
+      <small><b>Contact:</b> <span data-setting="email">constructionssgamage@gmail.com</span> • <span data-setting="phone">071 858 4073</span></small><br/>
+      <small>© 2026 S.Gamage Constructions. All rights reserved.</small>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/app.js"></script>
+<script>
+  loadSettings();
+  initCustomerLoginForm();
+</script>
+</body>
+</html>

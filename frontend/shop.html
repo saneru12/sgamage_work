@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hardware Shop - S.Gamage Constructions</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<header>
+  <div class="nav">
+    <a class="brand" href="index.html">
+      <img class="brand-logo" src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?fm=jpg&q=80&w=200" alt="S.Gamage Constructions Logo"/>
+      <div>
+        <div class="brand-text">S.Gamage Constructions</div>
+        <div class="brand-sub">Residential • Commercial • Civil Engineering</div>
+      </div>
+    </a>
+    <nav class="menu">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="services.html">Services</a>
+      <a href="projects.html">Projects</a>
+      <a href="shop.html">Hardware Shop</a>
+      <a href="careers.html">Careers</a>
+      <a href="contact.html">Contact</a>
+      <a id="customerAuthLink" class="admin-btn" href="customer/login.html" title="Customer Login">Customer Login</a>
+      <a id="customerLogoutLink" class="admin-btn" href="#" title="Logout" style="display:none">Logout</a>
+      <button id="cartBtn" class="admin-btn" type="button" title="View Cart">Cart (<span id="cartCount">0</span>)</button>
+      <a class="admin-btn" href="admin/index.html" title="Admin Login">Admin</a>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+  <section class="panel shop-hero-panel">
+    <div class="badge">Hardware & Building Supplies</div>
+    <div class="shop-hero-head">
+      <div>
+        <h2 style="margin:10px 0 6px">Hardware Shop</h2>
+        <p class="shop-intro-copy">Browse construction-ready materials, compare departments, search by product name, and filter only the items your customer needs right now.</p>
+      </div>
+      <div id="shopResultsSummary" class="shop-summary-chip">Curated departments</div>
+    </div>
+
+    <div class="shop-toolbar">
+      <div class="shop-search-field">
+        <label for="shopSearch">Search products</label>
+        <input id="shopSearch" type="search" placeholder="Search cement, steel bars, PVC pipes, paint, safety helmet..." />
+      </div>
+
+      <div class="shop-sort-field">
+        <label for="shopSort">Sort by</label>
+        <select id="shopSort">
+          <option value="featured">Featured</option>
+          <option value="price_asc">Price: Low to High</option>
+          <option value="price_desc">Price: High to Low</option>
+          <option value="name_asc">Name: A to Z</option>
+          <option value="newest">Newest</option>
+        </select>
+      </div>
+
+      <label class="checkbox-pill" for="shopInStock">
+        <input id="shopInStock" type="checkbox" />
+        <span>In stock only</span>
+      </label>
+
+      <button id="shopClearFilters" class="btn ghost" type="button">Clear Filters</button>
+    </div>
+
+    <div id="shopActiveFilters" class="shop-active-filters"></div>
+  </section>
+
+  <section class="shop-section-block">
+    <div class="shop-section-head">
+      <div>
+        <div class="badge">Shop by Category</div>
+        <h3 style="margin:10px 0 6px">Popular construction departments</h3>
+      </div>
+      <p class="shop-muted-copy">A real-world category structure designed for building materials, site hardware and finishing items.</p>
+    </div>
+    <div id="shopCategoryGrid" class="shop-category-grid"></div>
+  </section>
+
+  <section class="shop-results-bar">
+    <div>
+      <h3 id="shopResultCount" style="margin:0">Loading products...</h3>
+      <p id="shopCategoryHint" class="shop-muted-copy" style="margin:6px 0 0">Please wait while we load the product catalog.</p>
+    </div>
+  </section>
+
+  <div id="shopEmptyState" class="panel shop-empty-state" style="display:none">
+    <div class="badge">No matching items</div>
+    <h3 style="margin:10px 0 6px">No products found for this filter</h3>
+    <p class="shop-muted-copy">Try a different keyword, remove the stock-only option, or switch to another category.</p>
+  </div>
+
+  <div id="productGrid" class="grid"></div>
+
+  <section class="panel delivery-process-public-box" style="margin-top:22px">
+    <div class="badge">Own Vehicle Delivery Process</div>
+    <div class="delivery-process-head">
+      <div>
+        <h3 style="margin:10px 0 6px">How hardware deliveries are handled in the real world</h3>
+        <p class="shop-muted-copy">Bulky materials are delivered using the hardware owner&apos;s vehicle and a delivery boy. The customer can request the preferred date, site contact, unloading support and route notes during checkout.</p>
+      </div>
+      <div class="delivery-policy-chip">Customer-visible tracking included</div>
+    </div>
+    <div id="publicDeliverySteps" class="delivery-step-grid"></div>
+    <div class="delivery-policy-grid">
+      <div class="delivery-policy-card">
+        <span>Lead time</span>
+        <b id="publicDeliveryPolicyLead">Loading...</b>
+      </div>
+      <div class="delivery-policy-card">
+        <span>Coverage</span>
+        <b id="publicDeliveryPolicyCoverage">Loading...</b>
+      </div>
+      <div class="delivery-policy-card">
+        <span>Delivery window</span>
+        <b id="publicDeliveryPolicyWindow">Loading...</b>
+      </div>
+      <div class="delivery-policy-card">
+        <span>Access / unloading</span>
+        <b id="publicDeliveryPolicyAccess">Loading...</b>
+      </div>
+      <div class="delivery-policy-card delivery-policy-card-wide">
+        <span>Inspection at handover</span>
+        <b id="publicDeliveryPolicyInspection">Loading...</b>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel return-policy-public-box" style="margin-top:22px">
+    <div class="badge">Hardware Return Process</div>
+    <h3 style="margin:10px 0 6px">How customer returns are handled</h3>
+    <div class="return-policy-columns">
+      <div>
+        <h4>Customer side</h4>
+        <ul>
+          <li>Log in and open <b>My Account → My Orders</b>.</li>
+          <li>Select the delivered order and use <b>Request Return</b>.</li>
+          <li>Choose the product, quantity, reason, condition and upload issue photos.</li>
+          <li>Admin reviews the request and updates the next action from the dashboard.</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Conditions</h4>
+        <ul>
+          <li>Wrong item / missing parts / visible transport damage: within 48 hours.</li>
+          <li>Defective or quality issue: within 7 days.</li>
+          <li>Unused standard-stock items: within 14 days if sealed or unused.</li>
+          <li>Custom, cut-to-size, mixed, tinted and special-order items are not accepted for change-of-mind returns.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<!-- Cart Overlay + Drawer -->
+<div id="cartOverlay" class="cart-overlay"></div>
+<aside id="cartDrawer" class="cart-drawer" aria-label="Shopping cart" aria-modal="true" role="dialog">
+  <div class="cart-head">
+    <div>
+      <span class="cart-step-label">Hardware Shop</span>
+      <h3 style="margin:6px 0 0">Your Cart</h3>
+    </div>
+    <button id="cartClose" class="icon-btn" type="button" aria-label="Close">✕</button>
+  </div>
+
+  <div class="cart-scroll">
+    <div class="cart-body cart-panel">
+      <div class="cart-section-head">
+        <div>
+          <span class="cart-step-label">Step 1</span>
+          <h4 class="cart-section-title">Review items</h4>
+        </div>
+        <span class="cart-count-chip"><span id="cartCountDrawer">0</span> items</span>
+      </div>
+      <p class="cart-section-copy">Check the selected products, update quantities, or remove items before you continue to payment.</p>
+      <div id="cartEmpty" class="cart-empty">Your cart is empty.</div>
+      <div id="cartItems" class="cart-items"></div>
+    </div>
+
+    <div class="cart-foot cart-panel">
+      <div class="cart-section-head">
+        <div>
+          <span class="cart-step-label">Step 2</span>
+          <h4 class="cart-section-title">Advance payment checkout</h4>
+        </div>
+      </div>
+      <p class="cart-section-copy">All checkout options stay visible inside this panel. Complete the advance payment details and upload the proof before placing the order.</p>
+
+      <div class="cart-total cart-total-card">
+        <div>
+          <span>Total order value</span>
+          <div class="cart-total-meta">Advance due will update automatically according to the admin payment settings.</div>
+        </div>
+        <b id="cartTotal">LKR 0</b>
+      </div>
+
+      <form id="checkoutForm" class="checkout-form">
+        <div class="checkout-card">
+          <div class="badge">Delivery Contact</div>
+          <div class="checkout-grid-2">
+            <div>
+              <label>Your name</label>
+              <input name="customerName" placeholder="Your name" required />
+            </div>
+            <div>
+              <label>Phone (WhatsApp)</label>
+              <input name="phone" placeholder="Phone (WhatsApp)" required />
+            </div>
+            <div>
+              <label>Site contact person</label>
+              <input name="siteContactName" placeholder="Person who will receive the items on site" required />
+            </div>
+            <div>
+              <label>Site contact phone</label>
+              <input name="siteContactPhone" placeholder="Receiver&apos;s phone number" required />
+            </div>
+          </div>
+          <label>Delivery address</label>
+          <textarea name="address" placeholder="Delivery address / site address" rows="2"></textarea>
+        </div>
+
+        <div class="checkout-card">
+          <div class="badge">Delivery Planning</div>
+          <div class="checkout-grid-2">
+            <div>
+              <label>Preferred delivery date</label>
+              <input name="preferredDate" type="date" />
+            </div>
+            <div>
+              <label>Preferred time slot</label>
+              <select name="preferredTimeSlot">
+                <option value="morning_8_11">Morning (8:00 AM - 11:00 AM)</option>
+                <option value="midday_11_2">Midday (11:00 AM - 2:00 PM)</option>
+                <option value="afternoon_2_5">Afternoon (2:00 PM - 5:00 PM)</option>
+                <option value="full_day_8_5">Full day route (8:00 AM - 5:00 PM)</option>
+                <option value="call_to_confirm">Call me to confirm</option>
+              </select>
+            </div>
+            <div>
+              <label>Unloading support available</label>
+              <select name="unloadingSupport">
+                <option value="customer_team_available">Customer team available on site</option>
+                <option value="delivery_boy_only">Delivery boy only / light unload</option>
+                <option value="site_labour_required">Need site labour to unload</option>
+                <option value="forklift_available">Forklift / machine available</option>
+                <option value="unsure">Not sure yet</option>
+              </select>
+            </div>
+            <div>
+              <label>Balance collection preference</label>
+              <select name="balanceCollectionMode">
+                <option value="cash_on_delivery" selected>Cash on delivery</option>
+                <option value="before_dispatch">Full payment before dispatch</option>
+              </select>
+            </div>
+          </div>
+          <label>Access notes / unloading instructions</label>
+          <textarea name="accessNotes" rows="3" placeholder="Road access, landmark, gate instructions, unloading point, upstairs delivery limits, crane / tailgate notes..."></textarea>
+          <div class="checkout-switch-row">
+            <label class="checkout-confirm-row">
+              <input type="checkbox" name="requiresCallBeforeDelivery" checked />
+              <span>Please call the site contact before the vehicle leaves / arrives.</span>
+            </label>
+            <label class="checkout-confirm-row">
+              <input type="checkbox" name="allowSplitDelivery" checked />
+              <span>Allow split delivery if ready stock can be sent first and balance items later.</span>
+            </label>
+          </div>
+          <div id="checkoutDeliveryGuide" class="checkout-delivery-guide">Loading delivery process...</div>
+        </div>
+
+        <div id="checkoutPaymentFlowCard" class="checkout-card checkout-advance-card">
+          <div id="checkoutPaymentFlowBadge" class="badge">Advance Payment Required</div>
+          <div id="checkoutAdvanceSummary" class="advance-summary-box">Loading payment settings...</div>
+          <div id="checkoutTermsBox" class="checkout-terms-box"></div>
+        </div>
+
+        <div class="checkout-card">
+          <div class="badge">Choose Payment Method</div>
+          <div id="checkoutPaymentMethods" class="payment-method-grid"></div>
+          <div id="checkoutPaymentMethodDetails" class="payment-method-detail-box">Choose a payment method to see instructions.</div>
+        </div>
+
+        <div class="checkout-card">
+          <div class="badge">Upload Payment Proof</div>
+          <div class="checkout-grid-2">
+            <div>
+              <label>Reference / Slip No. (optional)</label>
+              <input name="paymentReference" placeholder="Bank ref / Skrill ref / receipt no." />
+            </div>
+            <div>
+              <label>Crypto TX Hash (crypto only)</label>
+              <input name="cryptoTxHash" placeholder="Paste transaction hash if paying by crypto" />
+            </div>
+          </div>
+          <label>Payment note (optional)</label>
+          <textarea name="paymentNote" rows="2" placeholder="Anything admin should know about this payment"></textarea>
+          <label>Upload slip / screenshot (up to 5 images)</label>
+          <input name="paymentProof" type="file" accept="image/png,image/jpeg,image/webp" multiple />
+          <div id="checkoutProofPreview" class="proof-preview-grid"></div>
+          <label class="checkout-confirm-row">
+            <input type="checkbox" name="advanceConfirmed" />
+            <span id="checkoutPaymentConfirmText">I have paid the required advance and I agree to the payment terms shown above.</span>
+          </label>
+        </div>
+
+        <div class="checkout-submit-area">
+          <button id="checkoutBtn" class="btn" type="submit">Place order</button>
+          <div id="checkoutStatus" class="status" style="margin-top:10px"></div>
+          <small id="checkoutFooterNote" class="checkout-footer-note">This checkout is optimized for real-world hardware orders: customer pays the advance first, uploads proof, then the order stays pending until admin verifies and confirms the order.</small>
+        </div>
+      </form>
+    </div>
+  </div>
+</aside>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <b id="siteName">S.Gamage Constructions</b><br/>
+      <small id="siteTagline">Professional building constructions & engineering solutions.</small>
+    </div>
+    <div>
+      <small><b>Contact:</b> <span id="contactEmail">constructionssgamage@gmail.com</span> • <span id="contactPhone">071 858 4073</span></small><br/>
+      <small>© 2026 S.Gamage Constructions. All rights reserved.</small>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/app.js"></script>
+<script>loadSettings();</script>
+<script>loadProducts('productGrid');</script>
+<script>initCart();</script>
+</body>
+</html>

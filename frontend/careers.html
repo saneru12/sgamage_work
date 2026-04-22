@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Careers • S.Gamage Constructions</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<header>
+  <div class="nav">
+    <a class="brand" href="index.html">
+      <img class="brand-logo" src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?fm=jpg&q=80&w=200" alt="S.Gamage Constructions Logo"/>
+      <div>
+        <div class="brand-text" id="siteName">S.Gamage Constructions</div>
+        <div class="brand-sub" id="siteTagline">Residential • Commercial • Civil Engineering</div>
+      </div>
+    </a>
+    <nav class="menu">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="services.html">Services</a>
+      <a href="projects.html">Projects</a>
+      <a href="shop.html">Hardware Shop</a>
+      <a class="active" href="careers.html">Careers</a>
+      <a href="contact.html">Contact</a>
+      <a id="customerAuthLink" class="admin-btn" href="customer/login.html" title="Customer Login">Customer Login</a>
+      <a id="customerLogoutLink" class="admin-btn" href="#" title="Logout" style="display:none">Logout</a>
+      <a class="admin-btn" href="admin/index.html" title="Admin Login">Admin</a>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+  <section class="hero" style="grid-template-columns: 1.2fr .8fr;">
+    <div class="panel">
+      <div class="badge">Join Our Team</div>
+      <h1 style="margin-top:10px">Build the future with us.</h1>
+      <p style="color:var(--muted)">
+        We are hiring skilled and motivated people for construction, engineering and support roles.
+        Browse open positions below and apply in a few minutes.
+      </p>
+
+      <div class="stats" style="margin-top:18px">
+        <div class="stat"><b>Safety</b><span>First culture</span></div>
+        <div class="stat"><b>Growth</b><span>Training & support</span></div>
+        <div class="stat"><b>Quality</b><span>Modern standards</span></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="badge">How it works</div>
+      <ol style="margin:10px 0 0 18px; color:var(--muted); line-height:1.7">
+        <li>Select a job</li>
+        <li>Click <b>Apply</b></li>
+        <li>Fill your details + CV link (optional)</li>
+        <li>Submit — we’ll contact you</li>
+      </ol>
+      <p style="margin-top:12px;color:var(--muted)">
+        Need help? Email: <span id="contactEmail">constructionssgamage@gmail.com</span> • Phone: <span id="contactPhone">071 858 4073</span>
+      </p>
+    </div>
+  </section>
+
+  <section class="panel" style="margin-top:18px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <div>
+        <div class="badge">Open Positions</div>
+        <p style="margin:6px 0 0;color:var(--muted)">Updated by admin panel. Showing currently active job posts.</p>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <input id="jobSearch" class="input" placeholder="Search jobs (e.g., carpenter, engineer)" style="min-width:260px" />
+      </div>
+    </div>
+
+    <div id="jobGrid" class="grid" style="margin-top:14px"></div>
+    <p id="jobEmpty" style="display:none;color:var(--muted);margin-top:10px">No jobs available right now.</p>
+  </section>
+</div>
+
+<!-- Apply Modal -->
+<div id="applyModal" class="modal hidden" aria-hidden="true">
+  <div class="modal-card panel">
+    <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+      <div>
+        <div class="badge" id="mJobDept">Job</div>
+        <h2 id="mJobTitle" style="margin:8px 0 0">Apply</h2>
+        <p id="mJobMeta" style="margin:6px 0 0;color:var(--muted)"></p>
+      </div>
+      <button class="btn secondary" id="mCloseBtn" type="button">Close</button>
+    </div>
+
+    <form id="applyForm" style="margin-top:14px">
+      <div class="grid2">
+        <div>
+          <label>Full Name</label>
+          <input class="input" name="fullName" required placeholder="Your name" />
+        </div>
+        <div>
+          <label>Phone</label>
+          <input class="input" name="phone" required placeholder="07X XXX XXXX" />
+        </div>
+        <div>
+          <label>Email</label>
+          <input class="input" name="email" required type="email" placeholder="you@email.com" />
+        </div>
+        <div>
+          <label>Experience (Years)</label>
+          <input class="input" name="experienceYears" type="number" min="0" step="1" placeholder="0" />
+        </div>
+      </div>
+
+      <div style="margin-top:10px">
+        <label>Address (optional)</label>
+        <input class="input" name="address" placeholder="City / Area" />
+      </div>
+
+      <div class="grid2" style="margin-top:10px">
+        <div>
+          <label>Current Role (optional)</label>
+          <input class="input" name="currentRole" placeholder="e.g., Site Supervisor" />
+        </div>
+        <div>
+          <label>Expected Salary (optional)</label>
+          <input class="input" name="expectedSalary" placeholder="e.g., LKR 120,000" />
+        </div>
+      </div>
+
+      <div style="margin-top:10px">
+        <label>CV Link (optional)</label>
+        <input class="input" name="cvLink" placeholder="Google Drive / Dropbox link" />
+        <small style="color:var(--muted)">Tip: Upload your CV to Drive and paste the share link.</small>
+      </div>
+
+      <div style="margin-top:10px">
+        <label>Message (optional)</label>
+        <textarea class="input" name="message" rows="4" placeholder="Tell us briefly about your experience..."></textarea>
+      </div>
+
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px">
+        <button class="btn" type="submit">Submit Application</button>
+        <span id="applyStatus" class="status"></span>
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <b data-setting="siteName">S.Gamage Constructions</b><br/>
+      <small data-setting="tagline">Professional building constructions & engineering solutions.</small>
+    </div>
+    <div>
+      <small><b>Contact:</b> <span data-setting="email" id="contactEmail2">constructionssgamage@gmail.com</span> • <span data-setting="phone" id="contactPhone2">071 858 4073</span></small><br/>
+      <small>© 2026 S.Gamage Constructions. All rights reserved.</small>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/app.js"></script>
+<script>
+  loadSettings();
+  loadJobs("jobGrid", "jobSearch");
+</script>
+</body>
+</html>

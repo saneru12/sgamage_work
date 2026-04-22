@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Customer Register • S.Gamage Constructions</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body>
+<header>
+  <div class="nav">
+    <a class="brand" href="../index.html">
+      <img class="brand-logo" src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?fm=jpg&q=80&w=200" alt="S.Gamage Constructions Logo"/>
+      <div>
+        <div class="brand-text">S.Gamage Constructions</div>
+        <div class="brand-sub">Residential • Commercial • Civil Engineering</div>
+      </div>
+    </a>
+    <nav class="menu">
+      <a href="../index.html">Home</a>
+      <a href="../about.html">About</a>
+      <a href="../services.html">Services</a>
+      <a href="../projects.html">Projects</a>
+      <a href="../shop.html">Hardware Shop</a>
+      <a href="../careers.html">Careers</a>
+      <a href="../contact.html">Contact</a>
+      <a id="customerAuthLink" class="admin-btn" href="login.html" title="Customer Login">Customer Login</a>
+      <a id="customerLogoutLink" class="admin-btn" href="#" title="Logout" style="display:none">Logout</a>
+      <a class="admin-btn" href="../admin/index.html" title="Admin Login">Admin</a>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+  <section class="hero" style="grid-template-columns:1.1fr .9fr;">
+    <div class="panel">
+      <div class="badge">Customer Register</div>
+      <h2 style="margin:10px 0 6px">Create an account</h2>
+      <p style="color:var(--muted)">After registration, you will be redirected to the login panel.</p>
+
+      <form id="customerRegisterForm" class="form" style="margin-top:14px">
+        <label>Full Name</label>
+        <input name="fullName" placeholder="Your name" required />
+
+        <div class="row">
+          <div>
+            <label>Email</label>
+            <input name="email" type="email" placeholder="email@example.com" required />
+          </div>
+          <div>
+            <label>Phone</label>
+            <input name="phone" placeholder="07X XXX XXXX" required />
+          </div>
+        </div>
+
+        <label>Address (optional)</label>
+        <input name="address" placeholder="City / Area" />
+
+        <div class="row">
+          <div>
+            <label>Password</label>
+            <input name="password" type="password" placeholder="At least 6 characters" required />
+          </div>
+          <div>
+            <label>Confirm Password</label>
+            <input name="confirmPassword" type="password" placeholder="Re-type password" required />
+          </div>
+        </div>
+
+        <div style="margin-top:12px">
+          <button class="btn" type="submit">Create Account</button>
+        </div>
+        <div id="customerRegisterStatus" class="status"></div>
+      </form>
+    </div>
+
+    <div class="panel">
+      <div class="badge">Already have an account?</div>
+      <h2 style="margin:10px 0 6px">Go to login</h2>
+      <p style="color:var(--muted)">Use your email/phone and password to login.</p>
+      <p style="margin-top:12px">
+        <a class="btn" href="login.html">Login</a>
+      </p>
+      <p style="margin-top:14px;color:var(--muted)">Note: We do not auto-login after registration (as requested). You must login via the login panel.</p>
+    </div>
+  </section>
+</div>
+
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <b data-setting="siteName">S.Gamage Constructions</b><br/>
+      <small data-setting="tagline">Professional building constructions & engineering solutions.</small>
+    </div>
+    <div>
+      <small><b>Contact:</b> <span data-setting="email">constructionssgamage@gmail.com</span> • <span data-setting="phone">071 858 4073</span></small><br/>
+      <small>© 2026 S.Gamage Constructions. All rights reserved.</small>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/app.js"></script>
+<script>
+  loadSettings();
+  initCustomerRegisterForm();
+</script>
+</body>
+</html>

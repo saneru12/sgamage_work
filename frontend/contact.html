@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Contact - S.Gamage Constructions</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<header>
+  <div class="nav">
+    <a class="brand" href="index.html">
+      <img class="brand-logo" src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?fm=jpg&q=80&w=200" alt="S.Gamage Constructions Logo"/>
+      <div>
+        <div class="brand-text">S.Gamage Constructions</div>
+        <div class="brand-sub">Residential • Commercial • Civil Engineering</div>
+      </div>
+    </a>
+    <nav class="menu">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="services.html">Services</a>
+      <a href="projects.html">Projects</a>
+      <a href="shop.html">Hardware Shop</a>
+      <a href="careers.html">Careers</a>
+      <a href="contact.html">Contact</a>
+      <a id="customerAuthLink" class="admin-btn" href="customer/login.html" title="Customer Login">Customer Login</a>
+      <a id="customerLogoutLink" class="admin-btn" href="#" title="Logout" style="display:none">Logout</a>
+      <a class="admin-btn" href="admin/index.html" title="Admin Login">Admin</a>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+<section class="hero">
+  <div class="panel">
+    <div class="badge">Contact Us</div>
+    <h2 style="margin:10px 0 6px">Request a Quote</h2>
+    <p style="color:var(--muted)">Send your details and we will contact you quickly.</p>
+
+    <div style="margin-top:12px;color:var(--muted);line-height:1.8">
+      <div><b>Email:</b> <span data-setting="email">constructionssgamage@gmail.com</span></div>
+      <div><b>Phone:</b> <span data-setting="phone">071 858 4073</span></div>
+      <div><b>Address:</b> Thilina, Malimbada North, Palatuwa</div>
+    </div>
+  </div>
+
+  <div class="form">
+    <form id="inquiryForm">
+      <div class="row">
+        <div>
+          <label>Your Name</label>
+          <input name="name" required />
+        </div>
+        <div>
+          <label>Phone</label>
+          <input name="phone" required />
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Email</label>
+          <input type="email" name="email" />
+        </div>
+        <div>
+          <label>Service Needed</label>
+          <input name="service" placeholder="e.g. House construction, Renovation..." />
+        </div>
+      </div>
+
+      <label>Location</label>
+      <input name="location" placeholder="City / Address" />
+
+      <label>Message</label>
+      <textarea name="message" placeholder="Tell us about your requirement..." required></textarea>
+
+      <div style="margin-top:12px">
+        <button class="btn" type="submit">Send Inquiry</button>
+      </div>
+
+      <div id="inqStatus" class="status"></div>
+    </form>
+  </div>
+</section>
+
+</div>
+
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <b id="siteName">S.Gamage Constructions</b><br/>
+      <small id="siteTagline">Professional building constructions & engineering solutions.</small>
+    </div>
+    <div>
+      <small><b>Contact:</b> <span id="contactEmail">constructionssgamage@gmail.com</span> • <span id="contactPhone">071 858 4073</span></small><br/>
+      <small>© 2026 S.Gamage Constructions. All rights reserved.</small>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/app.js"></script>
+<script>loadSettings();</script>
+<script>hookInquiryForm();</script>
+</body>
+</html>

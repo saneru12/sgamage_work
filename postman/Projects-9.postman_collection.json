@@ -1,0 +1,249 @@
+{
+  "info": {
+    "_postman_id": "aab8376c-512e-41cf-8a96-54db848e6669",
+    "name": "S.Gamage - Projects (9)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000"
+    }
+  ],
+  "item": [
+    {
+      "name": "Modern Two-Story House",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/projects",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "projects"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Modern Two-Story House\",\n  \"category\": \"Residential\",\n  \"location\": \"Matara\",\n  \"year\": 2024,\n  \"status\": \"Completed\",\n  \"description\": \"A modern two-story residential build with premium finishing.\",\n  \"imageUrl\": \"https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Commercial Shop Complex",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/projects",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "projects"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Commercial Shop Complex\",\n  \"category\": \"Commercial\",\n  \"location\": \"Galle\",\n  \"year\": 2023,\n  \"status\": \"Completed\",\n  \"description\": \"Multi-unit shop complex with parking and modern facade.\",\n  \"imageUrl\": \"https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Road Drainage Improvement",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/projects",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "projects"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Road Drainage Improvement\",\n  \"category\": \"Civil\",\n  \"location\": \"Akuressa\",\n  \"year\": 2024,\n  \"status\": \"Ongoing\",\n  \"description\": \"Drainage and culvert improvements for better flood control.\",\n  \"imageUrl\": \"https://images.unsplash.com/photo-1504307651254-35680f356dfd?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Luxury Villa Renovation",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/projects",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "projects"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Luxury Villa Renovation\",\n  \"category\": \"Residential\",\n  \"location\": \"Weligama\",\n  \"year\": 2025,\n  \"status\": \"Completed\",\n  \"description\": \"Renovation including interior redesign and outdoor landscaping.\",\n  \"imageUrl\": \"https://images.unsplash.com/photo-1505691938895-1758d7feb511?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Warehouse Steel Structure",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/projects",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "projects"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Warehouse Steel Structure\",\n  \"category\": \"Commercial\",\n  \"location\": \"Matara\",\n  \"year\": 2024,\n  \"status\": \"Completed\",\n  \"description\": \"Steel frame warehouse with high roof and loading bays.\",\n  \"imageUrl\": \"https://images.unsplash.com/photo-1541888946425-d81bb19240f5?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Apartment Block (4 Floors)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/projects",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "projects"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Apartment Block (4 Floors)\",\n  \"category\": \"Residential\",\n  \"location\": \"Galle\",\n  \"year\": 2025,\n  \"status\": \"Ongoing\",\n  \"description\": \"4-floor apartment construction with modern utilities.\",\n  \"imageUrl\": \"https://images.unsplash.com/photo-1449247709967-d4461a6a6103?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Office Interior Fit-out",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/projects",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "projects"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Office Interior Fit-out\",\n  \"category\": \"Commercial\",\n  \"location\": \"Matara\",\n  \"year\": 2024,\n  \"status\": \"Completed\",\n  \"description\": \"Interior fit-out: partitions, ceiling, flooring and lighting.\",\n  \"imageUrl\": \"https://images.unsplash.com/photo-1524758631624-e2822e304c36?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Bridge Maintenance Work",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/projects",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "projects"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Bridge Maintenance Work\",\n  \"category\": \"Civil\",\n  \"location\": \"Devinuwara\",\n  \"year\": 2023,\n  \"status\": \"Completed\",\n  \"description\": \"Maintenance and reinforcement of existing bridge structure.\",\n  \"imageUrl\": \"https://images.unsplash.com/photo-1509395176047-4a66953fd231?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    },
+    {
+      "name": "House Foundation & Slab",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/projects",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "projects"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"House Foundation & Slab\",\n  \"category\": \"Residential\",\n  \"location\": \"Kamburupitiya\",\n  \"year\": 2024,\n  \"status\": \"Completed\",\n  \"description\": \"Foundation and slab work with quality concrete and steel.\",\n  \"imageUrl\": \"https://images.unsplash.com/photo-1504307651254-35680f356dfd?fm=jpg&q=80&w=1600\"\n}"
+        }
+      }
+    }
+  ]
+}
