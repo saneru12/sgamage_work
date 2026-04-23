@@ -1,6 +1,6 @@
 # S.Gamage Constructions — Website (Frontend + Backend + Admin Panel)
 
-Features: Home, About, Services, Projects/Portfolio, Contact form, Footer, customer feedback & ratings, and a basic hardware shop.
+Features: Home, About, Services, Projects/Portfolio, Contact form, Footer, customer feedback & ratings, and a basic hardware shop..
 
 ## NEW: Advance Payment Checkout (Hardware Orders)
 The hardware shop checkout now follows a real-world **advance payment before order confirmation** workflow.
