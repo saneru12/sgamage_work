@@ -1,6 +1,6 @@
 # S.Gamage Constructions — Website (Frontend + Backend + Admin Panel)
 
-Features: Home, About, Services, Projects/Portfolio, Contact form, Footer, customer feedback & ratings, and a basic hardware shop.
+Features: Home, About, Services, Projects/Portfolio, Contact form, Footer, customer feedback & ratings, and a basic hardware shop..
 
 ## NEW: Careers Application Review + Interview Update Workflow
 The careers module now includes a more real-world recruitment flow for S.Gamage Constructions.
