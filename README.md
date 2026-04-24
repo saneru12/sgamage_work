@@ -2,6 +2,64 @@
 
 Features: Home, About, Services, Projects/Portfolio, Contact form, Footer, customer feedback & ratings, and a basic hardware shop.
 
+## NEW: Careers Application Review + Interview Update Workflow
+The careers module now includes a more real-world recruitment flow for S.Gamage Constructions.
+
+### Admin Improvements
+- **Admin → Job Applications** now shows a richer applications workspace with:
+  - summary cards
+  - search + status filters + job filters
+  - quick status update dropdowns
+  - **View full application** button to open every submitted field
+  - **Send update / interview** button to email the applicant and save the communication history
+- The **View** modal shows:
+  - full applicant details
+  - job details
+  - interview schedule
+  - CV link
+  - internal admin notes
+  - customer-visible communication history
+- Admin can now send structured responses such as:
+  - shortlist update
+  - interview invitation
+  - request more information
+  - approval / next step
+  - rejection
+  - internal note only
+- Interview updates support:
+  - date and time
+  - expected end time
+  - interview type (on-site / phone / online / site visit)
+  - location or meeting details
+  - meeting link
+  - candidate note / instructions
+
+### Customer Experience
+- After applying from the careers page, the customer now receives clearer success messaging.
+- In **My Account → Job Applications**, the customer can now see:
+  - live application status
+  - latest admin update
+  - interview details
+  - previous email updates history
+  - their CV link and submitted application info
+
+### Email / SMTP Setup
+To actually send interview emails and application updates from the admin panel, configure these values in `backend/.env`:
+
+```env
+COMPANY_TIMEZONE=Asia/Colombo
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_SECURE=false
+MAIL_USER=your_email@example.com
+MAIL_PASS=your_smtp_password_or_app_password
+MAIL_FROM_EMAIL=your_email@example.com
+MAIL_FROM_NAME=S.Gamage Constructions
+MAIL_REPLY_TO=constructionssgamage@gmail.com
+```
+
+If SMTP is not configured, the admin can still save **internal notes**, but candidate emails will be blocked until mail settings are added.
+
 ## NEW: Advance Payment Checkout (Hardware Orders)
 The hardware shop checkout now follows a real-world **advance payment before order confirmation** workflow.
 

@@ -1519,7 +1519,7 @@ function openApply(jobId, viewOnly = false) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
-        status.textContent = "✅ Application submitted! We will contact you soon.";
+        status.textContent = "✅ Application submitted! Admin will review it and send any interview / next-step details to your email and My Account dashboard.";
         status.className = "status success";
         form.reset();
         // Refill locked identity fields
@@ -2398,6 +2398,17 @@ function initCustomerDashboard() {
     cancelled: "Cancelled"
   };
 
+  const APPLICATION_STATUS_META = {
+    new: { label: "New", note: "Your application was received and is waiting for admin review." },
+    reviewed: { label: "Reviewed", note: "The admin team has started reviewing your details." },
+    shortlisted: { label: "Shortlisted", note: "You have been shortlisted for the next step." },
+    interview_scheduled: { label: "Interview scheduled", note: "Check the interview box below and your email for timing details." },
+    approved: { label: "Approved", note: "The next confirmed step has been shared with you." },
+    hired: { label: "Hired", note: "Your application has been marked as completed successfully." },
+    on_hold: { label: "On hold", note: "The admin team is waiting for more information or an internal decision." },
+    rejected: { label: "Not selected", note: "This application has been closed." }
+  };
+
   const PAYMENT_STATUS_META = {
     none: "None",
     advance_required: "Advance required",
@@ -3163,16 +3174,89 @@ function initCustomerDashboard() {
       appsList.innerHTML = `<p style="color:var(--muted)">No job applications yet.</p>`;
       return;
     }
+
+    const visibleCommunications = (app) => Array.isArray(app.communications) ? app.communications : [];
+    const latestVisible = (app) => app.latestResponse || (visibleCommunications(app).length ? visibleCommunications(app)[visibleCommunications(app).length - 1] : null);
+    const interviewSummary = (app) => {
+      const interview = app.interviewSchedule || {};
+      if (!interview?.dateTime) return "";
+      const parts = [fmtDate(interview.dateTime)];
+      if (interview.mode) parts.push(interview.mode);
+      if (interview.location) parts.push(interview.location);
+      return parts.filter(Boolean).join(" • ");
+    };
+
     appsList.innerHTML = items
-      .map(
-        (a) => `
-      <div class="panel" style="margin-top:10px">
-        <div class="badge">${escapeHTML(a.status || "new")} • ${fmtDate(a.createdAt)}</div>
-        <p style="margin:6px 0 0;color:var(--muted)"><b>Job:</b> ${escapeHTML(a.jobId?.title || "-")}</p>
-        <small style="color:var(--muted)">Application ID: ${a._id}</small>
-      </div>
-    `
-      )
+      .map((app) => {
+        const statusInfo = APPLICATION_STATUS_META[app.status] || { label: app.status || "new", note: "" };
+        const latest = latestVisible(app);
+        const interview = app.interviewSchedule || {};
+        const history = visibleCommunications(app);
+
+        return `
+          <div class="panel" style="margin-top:10px">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <div>
+                <div class="badge">${escapeHTML(statusInfo.label)} • ${escapeHTML(fmtDate(app.createdAt))}</div>
+                <h3 style="margin:8px 0 4px">${escapeHTML(app.jobId?.title || "Job Application")}</h3>
+                <p style="margin:0;color:var(--muted)">${escapeHTML(app.jobId?.department || "General")}${app.jobId?.location ? ` • ${escapeHTML(app.jobId.location)}` : ""}</p>
+              </div>
+              <div style="text-align:right;min-width:220px">
+                <div style="font-weight:700">${escapeHTML(app.fullName || "")}</div>
+                <div style="color:var(--muted);font-size:.92rem">${escapeHTML(app.currentRole || "Role not specified")}${app.experienceYears ? ` • ${escapeHTML(String(app.experienceYears))} year(s)` : ""}</div>
+              </div>
+            </div>
+
+            <div style="margin-top:12px;padding:12px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(255,255,255,.03)">
+              <div style="font-size:.85rem;color:var(--muted)">Application status</div>
+              <div style="margin-top:4px">${escapeHTML(statusInfo.note || "We will update you when there is progress.")}</div>
+            </div>
+
+            ${app.message ? `<div style="margin-top:12px"><b>Your message:</b><div style="margin-top:6px;color:var(--muted);white-space:pre-wrap">${escapeHTML(app.message)}</div></div>` : ""}
+
+            ${interviewSummary(app) ? `
+              <div style="margin-top:12px;padding:12px;border-radius:14px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.18)">
+                <div class="badge">Interview Details</div>
+                <div style="margin-top:8px"><b>${escapeHTML(interviewSummary(app))}</b></div>
+                ${interview.meetingLink ? `<div style="margin-top:6px"><a class="btn" href="${escapeHTML(interview.meetingLink)}" target="_blank" rel="noopener noreferrer">Open Meeting Link</a></div>` : ""}
+                ${interview.note ? `<div style="margin-top:8px;color:var(--muted)">${escapeHTML(interview.note)}</div>` : ""}
+              </div>
+            ` : ""}
+
+            ${latest ? `
+              <div style="margin-top:12px;padding:12px;border-radius:14px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.18)">
+                <div class="badge">Latest Admin Update</div>
+                <div style="margin-top:8px"><b>${escapeHTML(latest.subject || "Application update")}</b></div>
+                <div style="margin-top:6px;color:var(--muted);white-space:pre-wrap">${escapeHTML(latest.message || "")}</div>
+                ${latest.note ? `<div style="margin-top:8px;color:var(--muted)"><b>Note:</b> ${escapeHTML(latest.note)}</div>` : ""}
+                <small style="display:block;margin-top:8px;color:var(--muted)">Sent: ${escapeHTML(fmtDate(latest.sentAt || latest.createdAt))}</small>
+              </div>
+            ` : `
+              <div style="margin-top:12px;color:var(--muted)">No admin update has been sent to you yet. The admin team will email / update this dashboard when they move your application forward.</div>
+            `}
+
+            ${history.length > 1 ? `
+              <div style="margin-top:12px">
+                <div class="badge">Previous Updates</div>
+                <div style="margin-top:8px;display:grid;gap:10px">
+                  ${history.slice(0, -1).map((entry) => `
+                    <div style="padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,.08)">
+                      <div><b>${escapeHTML(entry.subject || "Application update")}</b></div>
+                      <div style="margin-top:6px;color:var(--muted);white-space:pre-wrap">${escapeHTML(entry.message || "")}</div>
+                      <small style="display:block;margin-top:8px;color:var(--muted)">${escapeHTML(fmtDate(entry.createdAt))}</small>
+                    </div>
+                  `).join("")}
+                </div>
+              </div>
+            ` : ""}
+
+            <div style="margin-top:12px;color:var(--muted);font-size:.92rem">
+              <b>Application ID:</b> ${escapeHTML(app._id)}
+              ${app.cvLink ? ` • <a href="${escapeHTML(app.cvLink)}" target="_blank" rel="noopener noreferrer">Your CV Link</a>` : ""}
+            </div>
+          </div>
+        `;
+      })
       .join("");
   };
 

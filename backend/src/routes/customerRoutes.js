@@ -18,6 +18,68 @@ function normalizePhone(phone) {
   return String(phone || "").trim();
 }
 
+function sanitizeApplicationForCustomer(doc) {
+  const item = doc?.toObject ? doc.toObject() : doc || {};
+  const communications = Array.isArray(item.communications)
+    ? item.communications
+        .filter((entry) => String(entry?.channel || "") === "email")
+        .map((entry) => ({
+          _id: entry._id,
+          responseType: entry.responseType,
+          channel: entry.channel,
+          subject: entry.subject,
+          message: entry.message,
+          note: entry.note,
+          statusAtSend: entry.statusAtSend,
+          interviewDateTime: entry.interviewDateTime,
+          interviewEndTime: entry.interviewEndTime,
+          interviewMode: entry.interviewMode,
+          interviewLocation: entry.interviewLocation,
+          meetingLink: entry.meetingLink,
+          sentBy: entry.sentBy,
+          sentToEmail: entry.sentToEmail,
+          emailSent: entry.emailSent,
+          createdAt: entry.createdAt
+        }))
+    : [];
+
+  const latestResponse = item.latestResponse && item.latestResponse.channel === "email"
+    ? {
+        responseType: item.latestResponse.responseType,
+        channel: item.latestResponse.channel,
+        subject: item.latestResponse.subject,
+        message: item.latestResponse.message,
+        note: item.latestResponse.note,
+        sentAt: item.latestResponse.sentAt,
+        sentToEmail: item.latestResponse.sentToEmail,
+        sentBy: item.latestResponse.sentBy,
+        emailSent: item.latestResponse.emailSent
+      }
+    : null;
+
+  return {
+    _id: item._id,
+    jobId: item.jobId,
+    customerId: item.customerId,
+    fullName: item.fullName,
+    phone: item.phone,
+    email: item.email,
+    address: item.address,
+    experienceYears: item.experienceYears,
+    currentRole: item.currentRole,
+    expectedSalary: item.expectedSalary,
+    cvLink: item.cvLink,
+    message: item.message,
+    status: item.status,
+    interviewSchedule: item.interviewSchedule || null,
+    latestResponse,
+    communications,
+    lastContactedAt: item.lastContactedAt,
+    createdAt: item.createdAt,
+    updatedAt: item.updatedAt
+  };
+}
+
 // POST /api/customers/register
 // Note: As requested, registration does NOT auto-login. Customer must login via login panel.
 router.post("/register", async (req, res) => {
@@ -112,19 +174,16 @@ router.patch("/me", requireCustomer, async (req, res) => {
     if (req.body.phone !== undefined) updates.phone = normalizePhone(req.body.phone);
     if (req.body.address !== undefined) updates.address = String(req.body.address || "");
 
-    // email changes are intentionally not allowed here to keep identity stable.
     if (req.body.email !== undefined) {
       return res.status(400).json({ message: "Email change is not supported" });
     }
 
-    // Optional password change
     if (req.body.newPassword) {
       const newPassword = String(req.body.newPassword);
       if (newPassword.length < 6) return res.status(400).json({ message: "Password must be at least 6 characters" });
       updates.passwordHash = await bcrypt.hash(newPassword, 10);
     }
 
-    // Prevent phone duplication
     if (updates.phone) {
       const exists = await CustomerUser.findOne({ phone: updates.phone, _id: { $ne: req.customer.id } });
       if (exists) return res.status(409).json({ message: "Phone is already in use" });
@@ -148,28 +207,27 @@ router.patch("/me", requireCustomer, async (req, res) => {
 });
 
 // ------------------ Customer self-service data ------------------
-// GET /api/customers/me/orders
 router.get("/me/orders", requireCustomer, async (req, res) => {
   const items = await Order.find({ customerId: req.customer.id }).sort({ createdAt: -1 });
   res.json(items);
 });
 
-// GET /api/customers/me/inquiries
 router.get("/me/inquiries", requireCustomer, async (req, res) => {
   const items = await Inquiry.find({ customerId: req.customer.id }).sort({ updatedAt: -1 });
   res.json(items);
 });
 
-// GET /api/customers/me/reviews
 router.get("/me/reviews", requireCustomer, async (req, res) => {
   const items = await Review.find({ customerId: req.customer.id }).sort({ createdAt: -1 }).populate("projectId", "title");
   res.json(items);
 });
 
-// GET /api/customers/me/applications
 router.get("/me/applications", requireCustomer, async (req, res) => {
-  const items = await JobApplication.find({ customerId: req.customer.id }).sort({ createdAt: -1 }).populate("jobId", "title department location");
-  res.json(items);
+  const items = await JobApplication.find({ customerId: req.customer.id })
+    .sort({ createdAt: -1 })
+    .populate("jobId", "title department location employmentType experienceLevel salaryRange");
+
+  res.json(items.map((item) => sanitizeApplicationForCustomer(item)));
 });
 
 module.exports = router;

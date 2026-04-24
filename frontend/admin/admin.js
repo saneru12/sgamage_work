@@ -692,9 +692,15 @@ const AdminUI = (() => {
     return wrap;
   }
 
-  function modal(title, bodyNode, onSave) {
+  function modal(title, bodyNode, onSave, options = {}) {
+    const maxWidthClass = options.maxWidthClass || "max-w-xl";
+    const saveLabel = options.saveLabel || "Save";
+    const cancelLabel = options.cancelLabel || "Cancel";
+    const hideSave = !!options.hideSave;
+    const closeOnOverlay = options.closeOnOverlay !== false;
+
     const overlay = el("div", "fixed inset-0 bg-black/40 flex items-center justify-center p-3 sm:p-4 z-50");
-    const card = el("div", "w-full max-w-xl bg-white rounded-2xl shadow-lg border border-slate-200 max-h-[85vh] flex flex-col");
+    const card = el("div", `w-full ${maxWidthClass} bg-white rounded-2xl shadow-lg border border-slate-200 max-h-[90vh] flex flex-col`);
     card.innerHTML = `
       <div class="p-3 border-b border-slate-200 flex items-center justify-between">
         <div class="text-base font-semibold text-slate-900">${title}</div>
@@ -702,16 +708,30 @@ const AdminUI = (() => {
       </div>
       <div class="p-3 overflow-y-auto flex-1" id="mBody"></div>
       <div class="p-3 border-t border-slate-200 flex items-center justify-end gap-2">
-        <button id="mCancel" class="px-4 py-1.5 text-sm rounded-xl border border-slate-200 hover:bg-slate-50">Cancel</button>
-        <button id="mSave" class="px-4 py-1.5 text-sm rounded-xl bg-slate-900 text-white hover:bg-slate-800">Save</button>
+        <button id="mCancel" class="px-4 py-1.5 text-sm rounded-xl border border-slate-200 hover:bg-slate-50">${cancelLabel}</button>
+        <button id="mSave" class="px-4 py-1.5 text-sm rounded-xl bg-slate-900 text-white hover:bg-slate-800" ${hideSave ? 'style="display:none"' : ""}>${saveLabel}</button>
       </div>
     `;
     overlay.appendChild(card);
     document.body.appendChild(overlay);
     card.querySelector("#mBody").appendChild(bodyNode);
-    const close = () => overlay.remove();
+
+    const close = () => {
+      if (typeof options.onClose === "function") {
+        try { options.onClose(); } catch (err) {}
+      }
+      overlay.remove();
+    };
+
     card.querySelector("#mClose").onclick = close;
     card.querySelector("#mCancel").onclick = close;
+
+    if (closeOnOverlay) {
+      overlay.addEventListener("click", (event) => {
+        if (event.target === overlay) close();
+      });
+    }
+
     card.querySelector("#mSave").onclick = async () => {
       try {
         await onSave();
@@ -1159,90 +1179,698 @@ async function renderApplications() {
   setHeader("Job Applications");
   setContent(`<div class="text-sm text-slate-700">Loading...</div>`);
 
-  const items = await fetchJSON(`${API_BASE}/admin/applications`);
-  const wrap = el("div", "space-y-3");
-  wrap.innerHTML = items.length ? "" : `<div class="text-sm text-slate-600">No applications yet.</div>`;
-
-  const badge = (status) => {
-    const m = {
-      new: "bg-blue-50 text-blue-700 border-blue-200",
-      reviewed: "bg-slate-50 text-slate-700 border-slate-200",
-      shortlisted: "bg-emerald-50 text-emerald-700 border-emerald-200",
-      rejected: "bg-red-50 text-red-700 border-red-200"
-    };
-    return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs border ${m[status] || "bg-slate-50 text-slate-700 border-slate-200"}">${status || "—"}</span>`;
+  const statusMeta = {
+    new: {
+      label: "New",
+      chip: "bg-blue-50 text-blue-700 border-blue-200",
+      hint: "Fresh application waiting for review"
+    },
+    reviewed: {
+      label: "Reviewed",
+      chip: "bg-slate-50 text-slate-700 border-slate-200",
+      hint: "Initial review completed"
+    },
+    shortlisted: {
+      label: "Shortlisted",
+      chip: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      hint: "Candidate moved to the next shortlist"
+    },
+    interview_scheduled: {
+      label: "Interview Scheduled",
+      chip: "bg-amber-50 text-amber-700 border-amber-200",
+      hint: "Interview invitation has been prepared or sent"
+    },
+    approved: {
+      label: "Approved",
+      chip: "bg-cyan-50 text-cyan-700 border-cyan-200",
+      hint: "Admin approved the next confirmed step"
+    },
+    hired: {
+      label: "Hired",
+      chip: "bg-purple-50 text-purple-700 border-purple-200",
+      hint: "Candidate has accepted / joined"
+    },
+    on_hold: {
+      label: "On Hold",
+      chip: "bg-orange-50 text-orange-700 border-orange-200",
+      hint: "Waiting for more information or internal decision"
+    },
+    rejected: {
+      label: "Rejected",
+      chip: "bg-red-50 text-red-700 border-red-200",
+      hint: "Application has been closed"
+    }
   };
 
-  for (const a of items) {
-    const jobTitle = a.jobId?.title || "—";
-    const meta = [
-      a.jobId?.department ? a.jobId.department : null,
-      a.jobId?.location ? a.jobId.location : null
-    ].filter(Boolean).join(" • ");
+  const responsePresets = {
+    custom_update: {
+      label: "Custom update",
+      defaultStatus: "reviewed",
+      subject: (app) => `Update on your application - ${app.jobId?.title || "S.Gamage Constructions"}`,
+      message: (app) => `Dear ${app.fullName || "Applicant"},
 
-    const card = el("div", "p-4 rounded-2xl border border-slate-200");
-    card.innerHTML = `
-      <div class="flex items-start justify-between gap-4">
+Thank you for applying for the ${app.jobId?.title || "position"} role. We reviewed your application and wanted to share an update with you.
+
+Best regards,
+S.Gamage Constructions`,
+      note: () => ""
+    },
+    shortlist_update: {
+      label: "Shortlist update",
+      defaultStatus: "shortlisted",
+      subject: (app) => `Shortlisted - ${app.jobId?.title || "Application Update"}`,
+      message: (app) => `Dear ${app.fullName || "Applicant"},
+
+Thank you for applying for the ${app.jobId?.title || "position"} role. We are happy to let you know that you have been shortlisted for the next stage of our hiring process.
+
+We will contact you again shortly with the next step.
+
+Best regards,
+S.Gamage Constructions`,
+      note: () => ""
+    },
+    interview_invitation: {
+      label: "Interview invitation",
+      defaultStatus: "interview_scheduled",
+      subject: (app) => `Interview Invitation - ${app.jobId?.title || "Application Update"}`,
+      message: (app) => `Dear ${app.fullName || "Applicant"},
+
+Thank you for applying for the ${app.jobId?.title || "position"} role. We would like to invite you for an interview. Please review the interview details below and reply if you need any clarification.
+
+Best regards,
+S.Gamage Constructions`,
+      note: () => "Please be at the location 10 minutes early and bring any required documents."
+    },
+    request_more_info: {
+      label: "Request more info",
+      defaultStatus: "on_hold",
+      subject: (app) => `Additional Information Needed - ${app.jobId?.title || "Application Update"}`,
+      message: (app) => `Dear ${app.fullName || "Applicant"},
+
+Thank you for applying for the ${app.jobId?.title || "position"} role. Before we move your application forward, please reply to this email with the requested details.
+
+Best regards,
+S.Gamage Constructions`,
+      note: () => "Example: updated CV, references, NIC copy or availability confirmation."
+    },
+    approval: {
+      label: "Approval / next step",
+      defaultStatus: "approved",
+      subject: (app) => `Next Step Confirmed - ${app.jobId?.title || "Application Update"}`,
+      message: (app) => `Dear ${app.fullName || "Applicant"},
+
+Thank you for applying for the ${app.jobId?.title || "position"} role. We are pleased to move your application to the next confirmed step. Please review the details below and contact us if you need anything clarified.
+
+Best regards,
+S.Gamage Constructions`,
+      note: () => ""
+    },
+    rejection: {
+      label: "Polite rejection",
+      defaultStatus: "rejected",
+      subject: (app) => `Update on your application - ${app.jobId?.title || "S.Gamage Constructions"}`,
+      message: (app) => `Dear ${app.fullName || "Applicant"},
+
+Thank you for taking the time to apply for the ${app.jobId?.title || "position"} role. After careful review, we will not be moving forward with your application at this stage. We appreciate your interest in S.Gamage Constructions and wish you all the best.
+
+Best regards,
+S.Gamage Constructions`,
+      note: () => ""
+    },
+    internal_note: {
+      label: "Internal note only",
+      defaultStatus: "reviewed",
+      subject: (app) => `Internal note - ${app.jobId?.title || "Application"}`,
+      message: () => "",
+      note: () => "Visible only to admin. Not sent to the candidate."
+    }
+  };
+
+  const statusOptions = Object.keys(statusMeta);
+  const items = await fetchJSON(`${API_BASE}/admin/applications`);
+
+  const wrap = el("div", "space-y-4");
+  wrap.innerHTML = `
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div class="rounded-2xl border border-slate-200 bg-white p-4">
+        <div class="text-xs uppercase tracking-wide text-slate-500">Total applications</div>
+        <div class="mt-2 text-3xl font-semibold text-slate-900">${items.length}</div>
+        <div class="mt-1 text-sm text-slate-500">All careers submissions in the system</div>
+      </div>
+      <div class="rounded-2xl border border-slate-200 bg-white p-4">
+        <div class="text-xs uppercase tracking-wide text-slate-500">New</div>
+        <div class="mt-2 text-3xl font-semibold text-slate-900">${items.filter((item) => item.status === "new").length}</div>
+        <div class="mt-1 text-sm text-slate-500">Fresh applications waiting for action</div>
+      </div>
+      <div class="rounded-2xl border border-slate-200 bg-white p-4">
+        <div class="text-xs uppercase tracking-wide text-slate-500">Interview stage</div>
+        <div class="mt-2 text-3xl font-semibold text-slate-900">${items.filter((item) => ["shortlisted", "interview_scheduled", "approved", "hired"].includes(item.status)).length}</div>
+        <div class="mt-1 text-sm text-slate-500">Candidates moving through the next step</div>
+      </div>
+      <div class="rounded-2xl border border-slate-200 bg-white p-4">
+        <div class="text-xs uppercase tracking-wide text-slate-500">Customer updates sent</div>
+        <div class="mt-2 text-3xl font-semibold text-slate-900">${items.filter((item) => item.lastContactedAt).length}</div>
+        <div class="mt-1 text-sm text-slate-500">Applications with at least one admin response</div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-slate-200 bg-white p-4">
+      <div class="flex flex-col xl:flex-row gap-3 xl:items-end xl:justify-between">
         <div>
-          <div class="font-semibold text-slate-900">${a.fullName} <span class="text-slate-500 font-normal">(${a.phone})</span></div>
-          <div class="text-sm text-slate-600 mt-1">${jobTitle}${meta ? ` <span class="text-slate-400">•</span> ${meta}` : ""}</div>
-          <div class="text-xs text-slate-500 mt-1">Applied: ${formatDate(a.createdAt)}</div>
-          <div class="mt-2 flex flex-wrap gap-2 items-center">
-            ${badge(a.status)}
-            ${a.email ? `<span class="text-xs text-slate-600">${a.email}</span>` : ""}
-            ${a.cvLink ? `<a class="text-xs text-slate-900 underline" href="${a.cvLink}" target="_blank" rel="noreferrer">CV link</a>` : ""}
+          <div class="text-sm font-semibold text-slate-900">Filter and search</div>
+          <div class="text-sm text-slate-500 mt-1">Search by candidate name, phone, email or job title. Use View to open every submitted detail, then Send update to email interview details with a note.</div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 w-full xl:max-w-4xl">
+          <div>
+            <label class="text-xs font-medium text-slate-700">Search</label>
+            <input type="text" data-app-search placeholder="Search candidate / job / phone / role" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+          </div>
+          <div>
+            <label class="text-xs font-medium text-slate-700">Status</label>
+            <select data-app-status-filter class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm">
+              <option value="all">All statuses</option>
+              ${statusOptions.map((status) => `<option value="${status}">${statusMeta[status].label}</option>`).join("")}
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-medium text-slate-700">Job role</label>
+            <select data-app-job-filter class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm">
+              <option value="all">All job posts</option>
+            </select>
           </div>
         </div>
-        <div class="flex flex-col gap-2 items-end">
-          <select data-status="${a._id}" class="text-sm rounded-xl border border-slate-300 px-3 py-2">
-            <option value="new" ${a.status==="new"?"selected":""}>new</option>
-            <option value="reviewed" ${a.status==="reviewed"?"selected":""}>reviewed</option>
-            <option value="shortlisted" ${a.status==="shortlisted"?"selected":""}>shortlisted</option>
-            <option value="rejected" ${a.status==="rejected"?"selected":""}>rejected</option>
-          </select>
-          <button data-notes="${a._id}" class="px-3 py-1.5 text-sm rounded-lg border border-slate-200 hover:bg-slate-50">Notes</button>
-          <button data-del="${a._id}" class="px-3 py-1.5 text-sm rounded-lg border border-slate-200 hover:bg-slate-50">Delete</button>
+      </div>
+    </div>
+
+    <div id="applicationsList" class="space-y-3"></div>
+  `;
+
+  const listEl = wrap.querySelector("#applicationsList");
+  const searchInput = wrap.querySelector("[data-app-search]");
+  const statusFilter = wrap.querySelector("[data-app-status-filter]");
+  const jobFilter = wrap.querySelector("[data-app-job-filter]");
+
+  const uniqueJobs = [];
+  const seenJobs = new Set();
+  items.forEach((item) => {
+    const id = String(item?.jobId?._id || "");
+    if (!id || seenJobs.has(id)) return;
+    seenJobs.add(id);
+    uniqueJobs.push({
+      id,
+      label: item?.jobId?.title || "Untitled job"
+    });
+  });
+  uniqueJobs.sort((a, b) => a.label.localeCompare(b.label));
+  jobFilter.insertAdjacentHTML("beforeend", uniqueJobs.map((job) => `<option value="${escapeHTML(job.id)}">${escapeHTML(job.label)}</option>`).join(""));
+
+  const formatPhoneForWhatsApp = (value = "") => {
+    const digits = String(value || "").replace(/\D+/g, "");
+    if (!digits) return "";
+    if (digits.startsWith("0") && digits.length === 10) return `94${digits.slice(1)}`;
+    return digits;
+  };
+
+  const nl2br = (value) => escapeHTML(value || "").replace(/\n/g, "<br />");
+
+  const getStatusChip = (status) => {
+    const meta = statusMeta[status] || statusMeta.reviewed;
+    return `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${meta.chip}">${escapeHTML(meta.label)}</span>`;
+  };
+
+  const getVisibleCommunications = (application) => Array.isArray(application?.communications)
+    ? application.communications.filter((entry) => String(entry?.channel || "") === "email")
+    : [];
+
+  const getLatestVisibleCommunication = (application) => {
+    const list = getVisibleCommunications(application);
+    return list.length ? list[list.length - 1] : null;
+  };
+
+  const formatDateInput = (value) => {
+    if (!value) return "";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+    const pad = (n) => String(n).padStart(2, "0");
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  };
+
+  const getInterviewSummary = (application) => {
+    const interview = application?.interviewSchedule || {};
+    if (!interview?.dateTime) return "";
+    const parts = [formatDate(interview.dateTime)];
+    if (interview.mode) parts.push(interview.mode);
+    if (interview.location) parts.push(interview.location);
+    return parts.filter(Boolean).join(" • ");
+  };
+
+  const buildDetailBody = (application) => {
+    const detail = el("div", "space-y-4");
+    const visibleCommunications = getVisibleCommunications(application);
+    const interview = application?.interviewSchedule || {};
+    const quickLinks = [
+      application.email ? `<a class="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50" href="mailto:${escapeHTML(application.email)}">Email</a>` : "",
+      application.phone ? `<a class="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50" href="tel:${escapeHTML(application.phone)}">Call</a>` : "",
+      application.phone ? `<a class="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50" href="https://wa.me/${escapeHTML(formatPhoneForWhatsApp(application.phone))}" target="_blank" rel="noreferrer">WhatsApp</a>` : ""
+    ].filter(Boolean).join("");
+
+    detail.innerHTML = `
+      <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+        <div class="flex flex-col lg:flex-row gap-4 lg:items-start lg:justify-between">
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              ${getStatusChip(application.status)}
+              <span class="text-sm text-slate-500">Submitted ${escapeHTML(formatDate(application.createdAt))}</span>
+            </div>
+            <h3 class="mt-3 text-xl font-semibold text-slate-900">${escapeHTML(application.fullName || "Applicant")}</h3>
+            <div class="mt-1 text-sm text-slate-600">${escapeHTML(application.currentRole || "Role not specified")}${application.experienceYears ? ` • ${escapeHTML(String(application.experienceYears))} year(s) experience` : ""}</div>
+          </div>
+          <div class="flex flex-wrap gap-2 text-sm">${quickLinks}</div>
         </div>
       </div>
-      ${a.message ? `<div class="mt-3 text-sm text-slate-700 whitespace-pre-wrap">${a.message}</div>` : ""}
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="rounded-2xl border border-slate-200 p-4">
+          <div class="text-sm font-semibold text-slate-900">Candidate details</div>
+          <div class="mt-3 space-y-2 text-sm text-slate-700">
+            <div><b>Email:</b> ${escapeHTML(application.email || "-")}</div>
+            <div><b>Phone:</b> ${escapeHTML(application.phone || "-")}</div>
+            <div><b>Address:</b> ${escapeHTML(application.address || "-")}</div>
+            <div><b>Expected salary:</b> ${escapeHTML(application.expectedSalary || "-")}</div>
+            <div><b>CV link:</b> ${application.cvLink ? `<a href="${escapeHTML(application.cvLink)}" target="_blank" rel="noreferrer" class="underline">Open CV / portfolio</a>` : "-"}</div>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 p-4">
+          <div class="text-sm font-semibold text-slate-900">Job + workflow</div>
+          <div class="mt-3 space-y-2 text-sm text-slate-700">
+            <div><b>Job title:</b> ${escapeHTML(application.jobId?.title || "-")}</div>
+            <div><b>Department:</b> ${escapeHTML(application.jobId?.department || "-")}</div>
+            <div><b>Location:</b> ${escapeHTML(application.jobId?.location || "-")}</div>
+            <div><b>Employment:</b> ${escapeHTML(application.jobId?.employmentType || "-")}</div>
+            <div><b>Experience level:</b> ${escapeHTML(application.jobId?.experienceLevel || "-")}</div>
+            <div><b>Last customer update:</b> ${application.lastContactedAt ? escapeHTML(formatDate(application.lastContactedAt)) : "No update sent yet"}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-slate-200 p-4">
+        <div class="text-sm font-semibold text-slate-900">Candidate message</div>
+        <div class="mt-3 text-sm text-slate-700 whitespace-pre-wrap">${application.message ? nl2br(application.message) : '<span class="text-slate-400">No candidate message added.</span>'}</div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="rounded-2xl border border-slate-200 p-4">
+          <div class="text-sm font-semibold text-slate-900">Interview schedule</div>
+          <div class="mt-3 space-y-2 text-sm text-slate-700">
+            <div><b>Date & time:</b> ${interview.dateTime ? escapeHTML(formatDate(interview.dateTime)) : "Not scheduled yet"}</div>
+            <div><b>Type:</b> ${escapeHTML(interview.mode || "-")}</div>
+            <div><b>Location / meeting:</b> ${escapeHTML(interview.location || interview.meetingLink || "-")}</div>
+            <div><b>Note:</b> ${escapeHTML(interview.note || "-")}</div>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 p-4">
+          <div class="text-sm font-semibold text-slate-900">Internal admin notes</div>
+          <div class="mt-3 text-sm text-slate-700 whitespace-pre-wrap">${application.adminNotes ? nl2br(application.adminNotes) : '<span class="text-slate-400">No internal notes yet.</span>'}</div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-slate-200 p-4">
+        <div class="text-sm font-semibold text-slate-900">Customer-visible communication history</div>
+        <div class="mt-3 space-y-3">
+          ${visibleCommunications.length ? visibleCommunications.map((entry) => `
+            <div class="rounded-xl border border-slate-200 bg-slate-50 p-3">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="font-medium text-slate-900">${escapeHTML(entry.subject || "Application update")}</div>
+                <div class="text-xs text-slate-500">${escapeHTML(formatDate(entry.createdAt))}</div>
+              </div>
+              <div class="mt-2 text-sm text-slate-700 whitespace-pre-wrap">${nl2br(entry.message || "")}</div>
+              ${entry.note ? `<div class="mt-2 text-xs text-slate-500"><b>Extra note:</b> ${escapeHTML(entry.note)}</div>` : ""}
+              ${entry.interviewDateTime ? `<div class="mt-2 text-xs text-slate-500"><b>Interview:</b> ${escapeHTML(formatDate(entry.interviewDateTime))}${entry.interviewMode ? ` • ${escapeHTML(entry.interviewMode)}` : ""}${entry.interviewLocation ? ` • ${escapeHTML(entry.interviewLocation)}` : ""}</div>` : ""}
+            </div>
+          `).join("") : `<div class="text-sm text-slate-500">No customer updates have been sent yet.</div>`}
+        </div>
+      </div>
     `;
-    wrap.appendChild(card);
-  }
+    return detail;
+  };
+
+  const openViewModal = async (id) => {
+    const full = await fetchJSON(`${API_BASE}/admin/applications/${id}`);
+    modal("Application Details", buildDetailBody(full), async () => {}, {
+      hideSave: true,
+      cancelLabel: "Close",
+      maxWidthClass: "max-w-5xl"
+    });
+  };
+
+  const openRespondModal = async (id) => {
+    const full = await fetchJSON(`${API_BASE}/admin/applications/${id}`);
+    const form = el("form", "space-y-4");
+    const visibleCommunications = getVisibleCommunications(full);
+    const latestVisible = visibleCommunications.length ? visibleCommunications[visibleCommunications.length - 1] : null;
+
+    form.innerHTML = `
+      <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+        <div class="flex flex-col lg:flex-row gap-3 lg:items-center lg:justify-between">
+          <div>
+            <div class="text-xs uppercase tracking-wide text-slate-500">Candidate</div>
+            <div class="text-lg font-semibold text-slate-900">${escapeHTML(full.fullName || "Applicant")}</div>
+            <div class="text-sm text-slate-500">${escapeHTML(full.email || "-")} • ${escapeHTML(full.phone || "-")}</div>
+          </div>
+          <div>
+            <div class="text-xs uppercase tracking-wide text-slate-500">Job role</div>
+            <div class="text-base font-semibold text-slate-900">${escapeHTML(full.jobId?.title || "-")}</div>
+            <div class="text-sm text-slate-500">Current status: ${escapeHTML(statusMeta[full.status]?.label || full.status || "new")}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="text-xs font-medium text-slate-700">Response template</label>
+          <select name="responseType" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm">
+            ${Object.entries(responsePresets).map(([value, preset]) => `<option value="${value}">${escapeHTML(preset.label)}</option>`).join("")}
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-medium text-slate-700">Status after update</label>
+          <select name="status" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm">
+            ${statusOptions.map((status) => `<option value="${status}" ${full.status === status ? "selected" : ""}>${escapeHTML(statusMeta[status].label)}</option>`).join("")}
+          </select>
+        </div>
+      </div>
+
+      <label class="flex items-center gap-2 text-sm text-slate-700">
+        <input type="checkbox" name="sendEmail" class="h-4 w-4 rounded border-slate-300" checked />
+        <span>Email this update to the candidate now</span>
+      </label>
+
+      <div>
+        <label class="text-xs font-medium text-slate-700">Email subject</label>
+        <input type="text" name="subject" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+      </div>
+
+      <div>
+        <label class="text-xs font-medium text-slate-700">Message for candidate</label>
+        <textarea name="message" rows="7" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm"></textarea>
+      </div>
+
+      <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-4">
+        <div class="text-sm font-semibold text-slate-900">Interview details (optional)</div>
+        <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="text-xs font-medium text-slate-700">Interview date & time</label>
+            <input type="datetime-local" name="interviewDateTime" value="${escapeHTML(formatDateInput(full?.interviewSchedule?.dateTime))}" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+          </div>
+          <div>
+            <label class="text-xs font-medium text-slate-700">Expected end time</label>
+            <input type="datetime-local" name="interviewEndTime" value="${escapeHTML(formatDateInput(full?.interviewSchedule?.endDateTime))}" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+          </div>
+          <div>
+            <label class="text-xs font-medium text-slate-700">Interview type</label>
+            <select name="interviewMode" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm">
+              <option value="">Select type</option>
+              <option value="On-site" ${full?.interviewSchedule?.mode === "On-site" ? "selected" : ""}>On-site</option>
+              <option value="Phone" ${full?.interviewSchedule?.mode === "Phone" ? "selected" : ""}>Phone</option>
+              <option value="Online" ${full?.interviewSchedule?.mode === "Online" ? "selected" : ""}>Online</option>
+              <option value="Site visit" ${full?.interviewSchedule?.mode === "Site visit" ? "selected" : ""}>Site visit</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-medium text-slate-700">Location / meeting details</label>
+            <input type="text" name="interviewLocation" value="${escapeHTML(full?.interviewSchedule?.location || "")}" placeholder="Office address / Google Meet / Zoom / call details" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+          </div>
+          <div class="md:col-span-2">
+            <label class="text-xs font-medium text-slate-700">Meeting link (optional)</label>
+            <input type="text" name="meetingLink" value="${escapeHTML(full?.interviewSchedule?.meetingLink || "")}" placeholder="https://..." class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label class="text-xs font-medium text-slate-700">Candidate note / instructions</label>
+        <textarea name="note" rows="3" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm"></textarea>
+      </div>
+
+      <div>
+        <label class="text-xs font-medium text-slate-700">Internal admin notes</label>
+        <textarea name="adminNotes" rows="4" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm">${escapeHTML(full.adminNotes || "")}</textarea>
+      </div>
+
+      <div class="rounded-2xl border border-slate-200 p-4">
+        <div class="flex items-center justify-between gap-3 flex-wrap">
+          <div>
+            <div class="text-sm font-semibold text-slate-900">Preview</div>
+            <div class="text-xs text-slate-500">This shows the candidate-facing content that will be emailed and saved in history.</div>
+          </div>
+          ${latestVisible ? `<div class="text-xs text-slate-500">Last email: ${escapeHTML(formatDate(latestVisible.createdAt))}</div>` : `<div class="text-xs text-slate-500">No previous email update sent.</div>`}
+        </div>
+        <div data-preview class="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700"></div>
+      </div>
+    `;
+
+    const field = (name) => form.elements[name];
+
+    const setPreset = () => {
+      const preset = responsePresets[field("responseType").value] || responsePresets.custom_update;
+      if (field("responseType").value === "internal_note") {
+        field("sendEmail").checked = false;
+        field("sendEmail").disabled = true;
+      } else {
+        field("sendEmail").disabled = false;
+      }
+      if (!field("subject").dataset.manual) field("subject").value = preset.subject(full);
+      if (!field("message").dataset.manual) field("message").value = preset.message(full);
+      if (!field("note").dataset.manual) field("note").value = preset.note(full);
+      if (!field("status").dataset.manual && preset.defaultStatus) field("status").value = preset.defaultStatus;
+      updatePreview();
+    };
+
+    const updatePreview = () => {
+      const preview = form.querySelector("[data-preview]");
+      const interviewBits = [];
+      if (field("interviewDateTime").value) interviewBits.push(`<div><b>Date & time:</b> ${escapeHTML(formatDate(field("interviewDateTime").value))}</div>`);
+      if (field("interviewEndTime").value) interviewBits.push(`<div><b>Expected end:</b> ${escapeHTML(formatDate(field("interviewEndTime").value))}</div>`);
+      if (field("interviewMode").value) interviewBits.push(`<div><b>Type:</b> ${escapeHTML(field("interviewMode").value)}</div>`);
+      if (field("interviewLocation").value) interviewBits.push(`<div><b>Location / meeting:</b> ${escapeHTML(field("interviewLocation").value)}</div>`);
+      if (field("meetingLink").value) interviewBits.push(`<div><b>Meeting link:</b> ${escapeHTML(field("meetingLink").value)}</div>`);
+
+      preview.innerHTML = `
+        <div class="space-y-3">
+          <div>
+            <div class="text-xs uppercase tracking-wide text-slate-500">Channel</div>
+            <div class="font-medium text-slate-900">${field("sendEmail").checked ? "Email to candidate" : "Internal note only"}</div>
+          </div>
+          <div>
+            <div class="text-xs uppercase tracking-wide text-slate-500">Subject</div>
+            <div class="font-medium text-slate-900">${escapeHTML(field("subject").value || "(no subject yet)")}</div>
+          </div>
+          <div>
+            <div class="text-xs uppercase tracking-wide text-slate-500">Message</div>
+            <div class="mt-1 whitespace-pre-wrap">${nl2br(field("message").value || "(no message yet)")}</div>
+          </div>
+          ${interviewBits.length ? `<div class="rounded-xl border border-blue-100 bg-blue-50 p-3">${interviewBits.join("")}</div>` : ""}
+          ${field("note").value ? `<div class="rounded-xl border border-slate-200 bg-white p-3"><div class="text-xs uppercase tracking-wide text-slate-500">Extra note</div><div class="mt-1 whitespace-pre-wrap">${nl2br(field("note").value)}</div></div>` : ""}
+          <div class="text-xs text-slate-500">Status after update: ${escapeHTML(statusMeta[field("status").value]?.label || field("status").value || "-")}</div>
+        </div>
+      `;
+    };
+
+    ["subject", "message", "note", "status", "interviewDateTime", "interviewEndTime", "interviewMode", "interviewLocation", "meetingLink"].forEach((name) => {
+      const input = field(name);
+      if (!input) return;
+      input.addEventListener("input", () => {
+        if (["subject", "message", "note", "status"].includes(name)) {
+          input.dataset.manual = "1";
+        }
+        updatePreview();
+      });
+      input.addEventListener("change", () => {
+        if (["subject", "message", "note", "status"].includes(name)) {
+          input.dataset.manual = "1";
+        }
+        updatePreview();
+      });
+    });
+
+    field("responseType").addEventListener("change", () => {
+      ["subject", "message", "note", "status"].forEach((name) => {
+        delete field(name).dataset.manual;
+      });
+      setPreset();
+    });
+
+    field("sendEmail").addEventListener("change", updatePreview);
+
+    setPreset();
+
+    modal("Send Application Update", form, async () => {
+      const payload = {
+        responseType: field("responseType").value,
+        status: field("status").value,
+        sendEmail: !!field("sendEmail").checked,
+        subject: field("subject").value.trim(),
+        message: field("message").value.trim(),
+        note: field("note").value.trim(),
+        interviewDateTime: field("interviewDateTime").value || "",
+        interviewEndTime: field("interviewEndTime").value || "",
+        interviewMode: field("interviewMode").value,
+        interviewLocation: field("interviewLocation").value.trim(),
+        meetingLink: field("meetingLink").value.trim(),
+        adminNotes: field("adminNotes").value
+      };
+
+      const result = await fetchJSON(`${API_BASE}/admin/applications/${id}/respond`, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+
+      alert(result.emailSent ? "Update sent successfully to the candidate." : "Internal note saved successfully.");
+      await renderApplications();
+    }, {
+      maxWidthClass: "max-w-5xl",
+      saveLabel: "Send Update"
+    });
+  };
+
+  const bindListActions = () => {
+    listEl.querySelectorAll("[data-app-view]").forEach((button) => {
+      button.onclick = () => openViewModal(button.dataset.appView);
+    });
+
+    listEl.querySelectorAll("[data-app-respond]").forEach((button) => {
+      button.onclick = () => openRespondModal(button.dataset.appRespond);
+    });
+
+    listEl.querySelectorAll("[data-app-delete]").forEach((button) => {
+      button.onclick = async () => {
+        if (!confirm("Delete this application?")) return;
+        await fetchJSON(`${API_BASE}/admin/applications/${button.dataset.appDelete}`, { method: "DELETE" });
+        await renderApplications();
+      };
+    });
+
+    listEl.querySelectorAll("[data-quick-status]").forEach((select) => {
+      select.onchange = async () => {
+        try {
+          await fetchJSON(`${API_BASE}/admin/applications/${select.dataset.quickStatus}`, {
+            method: "PUT",
+            body: JSON.stringify({ status: select.value })
+          });
+          await renderApplications();
+        } catch (err) {
+          alert(err.message || err);
+        }
+      };
+    });
+  };
+
+  const renderList = () => {
+    const q = String(searchInput.value || "").trim().toLowerCase();
+    const statusValue = statusFilter.value;
+    const jobValue = jobFilter.value;
+
+    const filtered = items.filter((item) => {
+      const matchesStatus = statusValue === "all" || item.status === statusValue;
+      const matchesJob = jobValue === "all" || String(item?.jobId?._id || "") === jobValue;
+      const searchable = [
+        item.fullName,
+        item.phone,
+        item.email,
+        item.currentRole,
+        item.expectedSalary,
+        item.jobId?.title,
+        item.jobId?.department,
+        item.jobId?.location
+      ].join(" ").toLowerCase();
+      const matchesSearch = !q || searchable.includes(q);
+      return matchesStatus && matchesJob && matchesSearch;
+    });
+
+    if (!filtered.length) {
+      listEl.innerHTML = `
+        <div class="rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-500">
+          No applications matched the selected filters.
+        </div>
+      `;
+      return;
+    }
+
+    listEl.innerHTML = filtered.map((application) => {
+      const latestVisible = getLatestVisibleCommunication(application);
+      const interviewSummary = getInterviewSummary(application);
+      const customerLinks = [
+        application.email ? `<a href="mailto:${escapeHTML(application.email)}" class="underline">${escapeHTML(application.email)}</a>` : "",
+        application.phone ? `<a href="tel:${escapeHTML(application.phone)}" class="underline">${escapeHTML(application.phone)}</a>` : "",
+        application.cvLink ? `<a href="${escapeHTML(application.cvLink)}" target="_blank" rel="noreferrer" class="underline">CV</a>` : ""
+      ].filter(Boolean).join(" • ");
+
+      return `
+        <div class="rounded-2xl border border-slate-200 bg-white p-4">
+          <div class="flex flex-col xl:flex-row gap-4 xl:items-start xl:justify-between">
+            <div class="min-w-0">
+              <div class="flex flex-wrap items-center gap-2">
+                ${getStatusChip(application.status)}
+                <span class="text-xs text-slate-500">Applied ${escapeHTML(formatDate(application.createdAt))}</span>
+                ${application.lastContactedAt ? `<span class="text-xs text-slate-500">• Last update ${escapeHTML(formatDate(application.lastContactedAt))}</span>` : ""}
+              </div>
+              <div class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1">
+                <h3 class="text-lg font-semibold text-slate-900">${escapeHTML(application.fullName || "Applicant")}</h3>
+                <span class="text-sm text-slate-500">${escapeHTML(application.currentRole || "Role not specified")}</span>
+                ${application.experienceYears ? `<span class="text-sm text-slate-500">• ${escapeHTML(String(application.experienceYears))} year(s) exp.</span>` : ""}
+              </div>
+              <div class="mt-1 text-sm text-slate-600">${escapeHTML(application.jobId?.title || "Untitled job")}${application.jobId?.department ? ` • ${escapeHTML(application.jobId.department)}` : ""}${application.jobId?.location ? ` • ${escapeHTML(application.jobId.location)}` : ""}</div>
+              <div class="mt-2 text-sm text-slate-600">${customerLinks || '<span class="text-slate-400">No contact links</span>'}</div>
+              <div class="mt-3 grid grid-cols-1 lg:grid-cols-3 gap-3 text-sm">
+                <div class="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                  <div class="text-xs uppercase tracking-wide text-slate-500">Candidate summary</div>
+                  <div class="mt-1 text-slate-700">${escapeHTML(application.address || "Address not provided")}</div>
+                  ${application.expectedSalary ? `<div class="mt-1 text-slate-500">Expected salary: ${escapeHTML(application.expectedSalary)}</div>` : ""}
+                </div>
+                <div class="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                  <div class="text-xs uppercase tracking-wide text-slate-500">Interview</div>
+                  <div class="mt-1 text-slate-700">${interviewSummary ? escapeHTML(interviewSummary) : "Not scheduled yet"}</div>
+                </div>
+                <div class="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                  <div class="text-xs uppercase tracking-wide text-slate-500">Latest customer update</div>
+                  <div class="mt-1 text-slate-700">${latestVisible ? escapeHTML(latestVisible.subject || "Application update") : "No email update yet"}</div>
+                  ${latestVisible ? `<div class="mt-1 text-xs text-slate-500">${escapeHTML(formatDate(latestVisible.createdAt))}</div>` : ""}
+                </div>
+              </div>
+              ${application.message ? `<div class="mt-3 rounded-xl border border-slate-200 p-3 text-sm text-slate-700"><b>Candidate message:</b> ${escapeHTML(application.message.length > 220 ? `${application.message.slice(0, 220)}...` : application.message)}</div>` : ""}
+            </div>
+
+            <div class="xl:w-[270px] shrink-0 space-y-3">
+              <div>
+                <label class="text-xs font-medium text-slate-700">Quick status</label>
+                <select data-quick-status="${application._id}" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm">
+                  ${statusOptions.map((status) => `<option value="${status}" ${application.status === status ? "selected" : ""}>${escapeHTML(statusMeta[status].label)}</option>`).join("")}
+                </select>
+                <div class="mt-1 text-xs text-slate-500">${escapeHTML(statusMeta[application.status]?.hint || "")}</div>
+              </div>
+              <div class="grid grid-cols-1 gap-2">
+                <button data-app-view="${application._id}" class="px-3 py-2 rounded-xl border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50">View full application</button>
+                <button data-app-respond="${application._id}" class="px-3 py-2 rounded-xl bg-slate-900 text-sm font-medium text-white hover:bg-slate-800">Send update / interview</button>
+                <button data-app-delete="${application._id}" class="px-3 py-2 rounded-xl border border-red-200 text-sm font-medium text-red-600 hover:bg-red-50">Delete application</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    bindListActions();
+  };
+
+  [searchInput, statusFilter, jobFilter].forEach((input) => {
+    input.addEventListener("input", renderList);
+    input.addEventListener("change", renderList);
+  });
 
   setContent(wrap);
-
-  wrap.querySelectorAll("[data-status]").forEach((s) => {
-    s.onchange = async () => {
-      await fetchJSON(`${API_BASE}/admin/applications/${s.dataset.status}`, {
-        method: "PUT",
-        body: JSON.stringify({ status: s.value })
-      });
-    };
-  });
-
-  wrap.querySelectorAll("[data-notes]").forEach((b) => {
-    b.onclick = async () => {
-      const id = b.dataset.notes;
-      const full = await fetchJSON(`${API_BASE}/admin/applications/${id}`);
-      const form = el("form", "space-y-3");
-      form.appendChild(textareaRow("Admin Notes", "adminNotes", full.adminNotes || ""));
-      modal("Application Notes", form, async () => {
-        await fetchJSON(`${API_BASE}/admin/applications/${id}`, {
-          method: "PUT",
-          body: JSON.stringify({ adminNotes: form.adminNotes.value })
-        });
-        await renderApplications();
-      });
-    };
-  });
-
-  wrap.querySelectorAll("[data-del]").forEach((b) => {
-    b.onclick = async () => {
-      if (!confirm("Delete this application?")) return;
-      await fetchJSON(`${API_BASE}/admin/applications/${b.dataset.del}`, { method: "DELETE" });
-      renderApplications();
-    };
-  });
+  renderList();
 }
 
   // --- Manage: Inquiries ---
